@@ -4,6 +4,7 @@
 - ریپو: <https://github.com/MrPitPot/shabpa-site>؛ سایت همون پوشه‌ی `public/` هست.
 - هاست: Cloudflare (Workers با static assets، همون Pages جدید)، پروژه‌ی `shabpa`. دیپلوی: `npx wrangler deploy` از ریشه‌ی ریپو.
 - دامنه‌ها: `shabpa.ir` و `www.shabpa.ir` به‌عنوان custom domain وصل شدن. آدرس workers.dev خاموشه.
+- آمار بازدید: Cloudflare Web Analytics (بدون کوکی، آدرسش توی CSP مجازه). دانلودها رو از GitHub بشمار: `gh api repos/MrPitPot/shabpa/releases --jq ".[]|[.tag_name,(.assets[]|select(.name==\"ShabpaSetup.exe\")|.download_count)]"`.
 - ریدایرکت http به https و www به shabpa.ir توسط `src/worker.js` انجام می‌شه (نه تنظیمات داشبورد). HSTS ساده‌ست (یک سال، بدون preload و includeSubDomains) تا بعداً مشکلی برای زیردامنه‌ها نسازه.
 - کارهای دستی باقی‌مونده توی داشبورد Cloudflare: Web Analytics خودکار رو خاموش کن (CSP بلاکش می‌کنه و با ادعای «بدون ردیابی» هم جوره)؛ DNSSEC و ورود دومرحله‌ای رو روشن کن.
 
