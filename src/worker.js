@@ -113,11 +113,12 @@ export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
     const isDev = env.DEV === "1"; /* only set by `wrangler dev --var DEV:1` */
-    if (!isDev && (url.protocol === "http:" || url.hostname !== CANONICAL_HOST)) {
-      url.protocol = "https:";
-      url.hostname = CANONICAL_HOST;
-      url.port = "";
-      return Response.redirect(url.toString(), 301);
+    const host = url.hostname;
+    const onWorkersDev = host.endsWith(".workers.dev"); /* second entry point that does not use our domain name */
+    if (!isDev) {
+      if (host === "www." + CANONICAL_HOST) { url.protocol = "https:"; url.hostname = CANONICAL_HOST; url.port = ""; return Response.redirect(url.toString(), 301); }
+      if (url.protocol === "http:") { url.protocol = "https:"; url.port = ""; return Response.redirect(url.toString(), 301); }
+      if (host !== CANONICAL_HOST && !onWorkersDev) { url.hostname = CANONICAL_HOST; url.port = ""; return Response.redirect(url.toString(), 301); }
     }
     const country = (request.cf && request.cf.country) || "??";
 
@@ -138,6 +139,10 @@ export default {
     if ((url.pathname === "/" || url.pathname === "/en/") && request.method === "GET") {
       console.log(JSON.stringify({ evt: "view", p: url.pathname, c: country }));
     }
-    return env.ASSETS.fetch(request);
+    const res = await env.ASSETS.fetch(request);
+    if (!onWorkersDev) return res;
+    const out = new Response(res.body, res);
+    out.headers.set("X-Robots-Tag", "noindex");
+    return out;
   },
 };
