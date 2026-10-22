@@ -1,0 +1,5 @@
+Contact: https://github.com/MrPitPot/shabpa/security/advisories/new
+Expires: 2027-10-22T00:00:00.000Z
+Preferred-Languages: fa, en
+Canonical: https://shabpa.ir/.well-known/security.txt
+Policy: https://github.com/MrPitPot/shabpa/blob/main/SECURITY.md

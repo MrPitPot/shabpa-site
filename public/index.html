@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>شب‌پا | نگهبان شبانه‌ی ویندوز</title>
+<meta name="description" content="شب‌پا یه برنامه‌ی سبک و فارسی برای ویندوزه: خاموشی و خواب زمان‌بندی‌شده، اورلی بازی، کنترل اینترنت هر برنامه، کارها و تمرکز، پشتیبان‌گیری و سلامت سیستم. رایگان و متن‌باز.">
+<meta name="theme-color" content="#04061a">
+<meta name="color-scheme" content="dark light">
+<link rel="canonical" href="https://shabpa.ir/">
+<link rel="icon" href="assets/img/logo.png" type="image/png">
+<link rel="apple-touch-icon" href="assets/img/logo.png">
+<link rel="preload" href="assets/fonts/Vazirmatn-Medium.woff2" as="font" type="font/woff2" crossorigin>
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fa_IR">
+<meta property="og:site_name" content="شب‌پا">
+<meta property="og:title" content="شب‌پا | نگهبان شبانه‌ی ویندوز">
+<meta property="og:description" content="خاموشی زمان‌بندی‌شده، اورلی بازی، کنترل اینترنت، کارها و تمرکز، پشتیبان‌گیری و سلامت سیستم؛ همه توی یه برنامه‌ی سبک و فارسی.">
+<meta property="og:url" content="https://shabpa.ir/">
+<meta property="og:image" content="https://shabpa.ir/assets/img/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/main.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#download">رفتن به دانلود</a>
+
+<!-- آسمان ثابت: با اسکرول از روز به شب تغییر می‌کنه -->
+<div class="sky" aria-hidden="true">
+  <div class="sky-grad"></div>
+  <canvas id="stars"></canvas>
+  <div class="sun"></div>
+  <div class="moon"><i></i><i></i><i></i></div>
+  <div class="clouds">
+    <span class="cloud c1"></span><span class="cloud c2"></span><span class="cloud c3"></span><span class="cloud c4"></span>
+  </div>
+  <svg class="horizon" viewBox="0 0 1600 320" preserveAspectRatio="xMidYMax slice" focusable="false">
+    <path class="hill hill-far" d="M0 320V190l90-38 120 46 130-70 150 62 110-48 140 74 120-60 160 52 130-86 110 70 140-42 120 56 90-30v174z"/>
+    <path class="hill hill-near" d="M0 320V240l140-34 110 24 160-44 140 38 180-30 120 30 150-38 130 28 160-20 110 22 100-18v140z"/>
+    <g class="city" id="city">
+      <path class="bld" d="M40 320v-62h34v-14h26v76zM130 320v-88h30v-10h22v98zM214 320v-56h46v56zM300 320v-104h26v-16h24v120zM390 320v-70h38v70zM470 320v-92h34v92zM560 320v-58h48v58zM650 320v-110h28v-12h20v122zM1200 320v-96h30v-12h26v108zM1290 320v-62h46v62zM1380 320v-108h26v-14h22v122zM1460 320v-74h38v74zM1530 320v-60h50v60z"/>
+      <g class="tower">
+        <path d="M912 320 L926 130 L934 130 L948 320 Z"/>
+        <path d="M919 150 L941 150 L945 176 L915 176 Z"/>
+        <path d="M886 118 L914 106 L946 106 L974 118 L960 134 L940 140 L920 140 L900 134 Z"/>
+        <path d="M918 106 L922 64 L938 64 L942 106 Z"/>
+        <rect x="928.6" y="8" width="2.8" height="58"/>
+        <circle class="beacon" cx="930" cy="8" r="3.4"/>
+      </g>
+    </g>
+  </svg>
+</div>
+
+<header class="top" id="top">
+  <a class="brand" href="#hero" aria-label="شب‌پا">
+    <img src="assets/img/logo.png" width="38" height="38" alt="">
+    <span>شب‌پا</span>
+  </a>
+  <nav aria-label="منوی اصلی">
+    <a href="#features">امکانات</a>
+    <a href="#themes">ظاهر</a>
+    <a href="#trust">امنیت</a>
+    <a href="#faq">سوالات</a>
+  </nav>
+  <div class="clock" id="clock" aria-hidden="true"><span class="clock-ico" id="clockIco"></span><span id="clockTime">۱۲:۰۰</span></div>
+  <a class="btn btn-sm" href="#download">دانلود</a>
+</header>
+
+<!-- ریل امکانات: نقطه‌های کنار صفحه -->
+<nav class="rail" id="rail" aria-label="فهرست امکانات"></nav>
+
+<main>
+<section class="hero" id="hero">
+  <div class="hero-in">
+    <p class="eyebrow reveal">رایگان · متن‌باز · ویندوز ۱۰ و ۱۱</p>
+    <h1 class="reveal">شب‌پا،<br><span class="grad">نگهبان شبانه‌ی ویندوزت</span></h1>
+    <p class="lead reveal">کامپیوتر رو سر وقت خاموش کن، بازی کن بی‌اینکه پینگ بپره، کارهات رو مرتب کن و از حال سیستم خبر داشته باش. همه توی یه برنامه‌ی سبک و فارسی.</p>
+    <div class="cta reveal">
+      <a class="btn" id="heroDl" href="https://github.com/MrPitPot/shabpa/releases/latest" rel="noopener">
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M12 3v12m0 0l-5-5m5 5l5-5M5 20h14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        دانلود شب‌پا <small id="heroVer"></small>
+      </a>
+      <a class="btn btn-ghost" href="#features">ببین چی می‌تونه</a>
+    </div>
+    <p class="hint reveal"><span class="hint-dot"></span> اسکرول کن؛ همراهش روز کم‌کم شب می‌شه</p>
+  </div>
+  <div class="hero-shot reveal" data-tilt>
+    <div class="win win-app"><img src="assets/img/home.webp" width="1280" height="800" alt="صفحه‌ی خانه‌ی شب‌پا: وضعیت زنده‌ی سیستم و کارهای بعدی" fetchpriority="high">
+    </div>
+  </div>
+</section>
+
+<section class="stats" aria-label="شب‌پا در یک نگاه">
+  <div class="stat reveal"><b data-count="21">۲۱</b><span>تم رنگی</span></div>
+  <div class="stat reveal"><b data-count="2">۲</b><span>زبان: فارسی و انگلیسی</span></div>
+  <div class="stat reveal"><b data-count="0">۰</b><span>تلمتری و ردیابی</span></div>
+  <div class="stat reveal"><b>MIT</b><span>متن‌باز و رایگان</span></div>
+</section>
+
+<div id="features">
+
+<article class="chap" data-title="خاموشی سر وقت">
+  <div class="card text">
+    <span class="kick">۰۱ · کنترل سیستم</span>
+    <h2>خاموشی، سر وقت و بدون دردسر</h2>
+    <p>خاموش‌کردن، خواب، هایبرنیت و ریستارت؛ همین الان، چند دقیقه‌ی دیگه یا طبق برنامه. هر کاری قبل از اجرا یه شمارش معکوس داره که می‌تونی لغوش کنی.</p>
+    <ul class="opts">
+      <li>وقتی دانلود تموم شد، سیستم بیکار شد یا یه برنامه بسته شد</li>
+      <li>تایمر بیدارباش و برنامه‌ی تکرارشونده (مثلاً هر شب ۱:۳۰)</li>
+      <li>تاریخچه‌ی خواب و بیداری سیستم</li>
+      <li>دستور دیررسیده (سیستم خاموش بوده) هرگز سورپرایزی اجرا نمی‌شه</li>
+    </ul>
+  </div>
+  <figure class="shot" data-tilt><div class="win win-app"><img loading="lazy" src="assets/img/power.webp" width="1280" height="800" alt="کنترل سیستم: خاموش، خواب، هایبرنیت و ریستارت با شمارش معکوس"></div></figure>
+</article>
+
+<article class="chap flip" data-title="کارها و تمرکز">
+  <div class="card text">
+    <span class="kick">۰۲ · کارها و تمرکز</span>
+    <h2>کارهات مرتب، تمرکزت حفظ</h2>
+    <p>لیست کار با موعد، یادآور و دسته‌بندی، و یه تایمر تمرکز که بعد از هر دور استراحت کوتاه یادت می‌ندازه.</p>
+    <ul class="opts">
+      <li>تایمر تمرکز و استراحت با مدت دلخواه</li>
+      <li>یادآور موعد کارها</li>
+      <li>گزارش هفتگی از اینکه چقدر کار کردی</li>
+    </ul>
+  </div>
+  <figure class="shot" data-tilt><div class="win win-app"><img loading="lazy" src="assets/img/focus.webp" width="1280" height="800" alt="تایمر تمرکز ۲۵ دقیقه‌ای"></div></figure>
+</article>
+
+<article class="chap" data-title="فایل و پشتیبان">
+  <div class="card text">
+    <span class="kick">۰۳ · فایل و پشتیبان</span>
+    <h2>پوشه‌هات امن، دیسکت سبک</h2>
+    <p>پشتیبان زمان‌بندی‌شده از پوشه‌هات، با بررسی درستی نسخه‌ها. بازیابی هم هیچ‌وقت فایل فعلی‌ت رو جایگزین نمی‌کنه.</p>
+    <ul class="opts">
+      <li>تحلیل فضای دیسک و پیدا کردن فایل‌های تکراری</li>
+      <li>پاک‌سازی فایل‌های موقت و کش، با نمایش حجم قبل از حذف</li>
+      <li>هر چیزی که حذف می‌شه فقط به سطل بازیافت می‌ره</li>
+    </ul>
+  </div>
+  <figure class="shot" data-tilt><div class="win win-app"><img loading="lazy" src="assets/img/backup.webp" width="1280" height="800" alt="تحلیل فضای دیسک: بزرگ‌ترین فایل‌ها و پوشه‌ها"></div></figure>
+</article>
+
+<article class="chap flip" data-title="سلامت و امنیت">
+  <div class="card text">
+    <span class="kick">۰۴ · سلامت و امنیت</span>
+    <h2>حال سیستمت رو بدون اصطلاح پیچیده بگه</h2>
+    <p>به‌جای کدهای عجیب رویدادها، خطاها رو به زبون ساده می‌گه و می‌گه چیکار کنی.</p>
+    <ul class="opts">
+      <li>بررسی دیسک، به‌روزرسانی ویندوز و سرویس‌ها</li>
+      <li>وضعیت فایروال، دیفندر و UAC</li>
+      <li>نظارت بر برنامه‌های اجرای خودکار و بررسی به‌روزرسانی برنامه و درایور</li>
+      <li>گزارش بدون اطلاعات شخصی، آماده‌ی فرستادن</li>
+    </ul>
+  </div>
+  <figure class="shot" data-tilt><div class="win win-app"><img loading="lazy" src="assets/img/health.webp" width="1280" height="800" alt="سلامت و امنیت: امتیاز سلامت سیستم و وضعیت دیسک‌ها"></div></figure>
+</article>
+
+<article class="chap" data-title="پروفایل‌ها">
+  <div class="card text">
+    <span class="kick">۰۵ · پروفایل‌ها</span>
+    <h2>با یه کلیک، حال‌وهوای سیستم عوض بشه</h2>
+    <p>پروفایل مطالعه، کار، استراحت و شب: چند کار رو با هم انجام می‌ده؛ نور صفحه، صدا، تایمر تمرکز، یادآور استراحت و بیشتر.</p>
+    <ul class="opts">
+      <li>شروع خودکار با ساعت یا با اجرای یه بازی</li>
+      <li>تاریخچه‌ی اجرا و برگشت (آندو)</li>
+      <li>خروجی و ورودی گرفتن برای دوستات</li>
+    </ul>
+  </div>
+  <figure class="shot" data-tilt><div class="win win-app"><img loading="lazy" src="assets/img/profiles.webp" width="1280" height="800" alt="پروفایل‌های مطالعه و کار"></div></figure>
+</article>
+
+<article class="chap flip" data-title="اورلی بازی">
+  <div class="card text">
+    <span class="kick">۰۶ · اورلی بازی</span>
+    <h2>اطلاعات سیستم روی بازی، با ظاهر دلخواه</h2>
+    <p>FPS، ۱٪ پایین، دمای کارت گرافیک و پردازنده، رم و پینگ؛ در شش چیدمان و با رنگ و اندازه‌ی خودت.</p>
+    <ul class="opts">
+      <li>پروفایل جدا برای هر بازی و گزارش بعد از بازی</li>
+      <li>اورلی رو با ماوس هر جا خواستی بکش</li>
+      <li>هیچ چیزی توی بازی تزریق نمی‌شه؛ ضدتقلب‌ها خیالشون راحته</li>
+    </ul>
+  </div>
+  <figure class="shot" data-tilt><div class="win win-app"><img loading="lazy" src="assets/img/overlay.webp" width="1280" height="800" alt="تنظیمات اورلی بازی"></div></figure>
+</article>
+
+<article class="chap" data-title="اینترنت و پینگ">
+  <div class="card text">
+    <span class="kick">۰۷ · اینترنت و پینگ</span>
+    <h2>ببین کی اینترنت رو می‌خوره، جلوش رو بگیر</h2>
+    <p>وقتی بازی می‌کنی، «محافظ موقع بازی» خودکار سقف آپلود و دانلود بقیه‌ی برنامه‌ها رو می‌ذاره تا پینگ نپره؛ بازی که بسته شد همه‌چی آزاد می‌شه.</p>
+    <ul class="opts">
+      <li>پینگ زنده و نمودار پایداری</li>
+      <li>مصرف اینترنت هر برنامه، سقف سرعت یا مسدودسازی</li>
+      <li>تاریخچه‌ی مصرف و سهمیه‌ی ماهانه</li>
+      <li>تغییر سریع DNS</li>
+    </ul>
+  </div>
+  <figure class="shot" data-tilt><div class="win win-app"><img loading="lazy" src="assets/img/ping.webp" width="1280" height="800" alt="پایداری پینگ و محافظ موقع بازی"></div></figure>
+</article>
+
+<article class="chap flip" data-title="آسایش و استراحت">
+  <div class="card text">
+    <span class="kick">۰۸ · آسایش و استراحت</span>
+    <h2>شب‌ها چشمت رو اذیت نکن</h2>
+    <p>کم‌نور کردن صفحه حتی پایین‌تر از حداقل خود مانیتور، رنگ گرم برای شب، و یادآور استراحت.</p>
+    <ul class="opts">
+      <li>نور شب با دمای رنگ قابل‌تنظیم</li>
+      <li>کم‌نور شدن خودکار توی بازه‌ی شب</li>
+      <li>میانبر صفحه‌کلید برای روشن/خاموش و تیره‌تر/روشن‌تر</li>
+      <li>حالت شب‌خواب و تست سطح صدای میکروفون</li>
+    </ul>
+  </div>
+  <figure class="shot" data-tilt><div class="win win-app"><img loading="lazy" src="assets/img/comfort.webp" width="1280" height="800" alt="کم‌نور کردن صفحه و رنگ گرم"></div></figure>
+</article>
+
+<article class="chap" data-title="آب و هوا">
+  <div class="card text">
+    <span class="kick">۰۹ · آب و هوا</span>
+    <h2>آسمون خودت رو هم ببین</h2>
+    <p>شهرت رو جستجو کن؛ وضعیت الان، پیش‌بینی ساعتی و هشت‌روزه با یه آسمون متحرک که شب و روز خودش عوض می‌شه.</p>
+  </div>
+  <figure class="shot" data-tilt><div class="win win-app"><img loading="lazy" src="assets/img/weather.webp" width="1280" height="800" alt="آب و هوا با آسمون متحرک"></div></figure>
+</article>
+
+<article class="chap flip" data-title="کنترل از راه دور">
+  <div class="card text">
+    <span class="kick">۱۰ · کنترل از راه دور</span>
+    <h2>از توی تلگرام، کامپیوتر رو مدیریت کن</h2>
+    <p>اختیاریه و با یه کد یک‌بارمصرف وصل می‌شه. برنامه هیچ‌وقت توکن ربات رو نمی‌بینه و فقط یه فهرست مشخص از دستورها قابل‌اجراست.</p>
+    <ul class="opts">
+      <li>وضعیت سیستم، خاموش و ریستارت با شمارش معکوس روی صفحه</li>
+      <li>کم‌نور کردن، صدا، شروع و پایان تمرکز</li>
+      <li>دستور قدیمی‌تر از ۳ دقیقه هرگز اجرا نمی‌شه</li>
+    </ul>
+  </div>
+  <figure class="shot chat" data-tilt aria-label="نمونه‌ی گفتگو با ربات">
+    <div class="win"><div class="win-bar"><i></i><i></i><i></i></div>
+      <div class="chat-body">
+        <p class="bub me">وضعیت؟</p>
+        <p class="bub bot">سیستم روشنه. پردازنده ۴۲٪، رم ۱۸ گیگ. از آخرین روشن‌شدن ۱۸ ساعت گذشته.</p>
+        <p class="bub me">ساعت ۱ شب خاموشش کن</p>
+        <p class="bub bot">باشه. ساعت ۰۱:۰۰، با شمارش معکوس ۶۰ ثانیه‌ای روی صفحه. بزنم؟</p>
+      </div>
+    </div>
+  </figure>
+</article>
+
+</div>
+
+<section class="try" id="try" data-title="امتحانش کن">
+  <div class="card text try-card">
+    <div>
+      <span class="kick">۱۱ · امتحانش کن</span>
+      <h2>خاموشی رو همین‌جا شبیه‌سازی کن</h2>
+      <p>این فقط یه نمایشه و به کامپیوترت دست نمی‌زنه. توی برنامه‌ی واقعی هم هر خاموشی قبل از اجرا یه شمارش معکوس داره که هر لحظه می‌تونی لغوش کنی.</p>
+    </div>
+    <div class="sim" id="sim">
+      <div class="seg" id="seg" role="radiogroup" aria-label="نوع دستور">
+        <button type="button" role="radio" aria-checked="true" data-act="خاموش" class="on">خاموش</button>
+        <button type="button" role="radio" aria-checked="false" data-act="خواب">خواب</button>
+        <button type="button" role="radio" aria-checked="false" data-act="هایبرنیت">هایبرنیت</button>
+      </div>
+      <div class="ring" id="ring"><svg viewBox="0 0 120 120" aria-hidden="true"><circle class="ring-bg" cx="60" cy="60" r="52"/><circle class="ring-fg" id="ringFg" cx="60" cy="60" r="52"/></svg><div class="ring-n" id="simNum">۱۰</div></div>
+      <p class="sim-msg" id="simMsg" role="status">آماده‌ای؟ دکمه رو بزن.</p>
+      <div class="sim-btns">
+        <button type="button" class="btn btn-sm" id="simGo">شروع شمارش معکوس</button>
+        <button type="button" class="btn btn-sm btn-ghost" id="simCancel" disabled>لغو</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="themes" id="themes" data-title="ظاهر">
+  <div class="card text wide">
+    <span class="kick">۱۲ · ظاهر</span>
+    <h2>۲۱ تم رنگی، فارسی و انگلیسی، روشن و تیره</h2>
+    <p>شب‌پا مال خودته؛ از سبز جنگلی تا نئون، از تیره‌ی شبانه تا روشن روزانه. رابط هم کامل فارسیه و با یه کلیک انگلیسی می‌شه.</p>
+  </div>
+  <div class="themes-row">
+    <figure class="shot" data-tilt><div class="win win-app"><img loading="lazy" src="assets/img/theme-sunset.webp" width="1280" height="800" alt="تم غروب با رنگ‌های گرم"></div><figcaption>غروب</figcaption></figure>
+    <figure class="shot" data-tilt><div class="win win-app"><img loading="lazy" src="assets/img/theme-pink.webp" width="1280" height="800" alt="تم روشن صورتی"></div><figcaption>صورتی (روشن)</figcaption></figure>
+    <figure class="shot" data-tilt><div class="win win-app"><img loading="lazy" src="assets/img/theme-forest.webp" width="1280" height="800" alt="تم سبز جنگلی"></div><figcaption>سبز جنگلی</figcaption></figure>
+  </div>
+</section>
+
+<section class="trust" id="trust" data-title="امنیت و حریم خصوصی">
+  <div class="card text wide">
+    <span class="kick">۱۳ · حریم خصوصی</span>
+    <h2>هر چی هست، روی کامپیوتر خودته</h2>
+    <div class="trust-grid">
+      <div><b>بدون ردیابی</b><span>همه‌چیز توی پوشه‌ی AppData خودت ذخیره می‌شه. تلمتری وجود نداره.</span></div>
+      <div><b>فقط چیزی که روشن کنی آنلاین می‌شه</b><span>بررسی به‌روزرسانی، آب و هوا، پیوند ربات و تیکت پشتیبانی.</span></div>
+      <div><b>همیشه قبل از اجرا می‌پرسه</b><span>هر زمان‌بندی، حذف یا پاک‌سازی اثر دقیقش رو نشون می‌ده و تأیید می‌گیره.</span></div>
+      <div><b>متن‌باز با مجوز MIT</b><span>همه‌ی کد در گیت‌هاب قابل‌خوندن و ساخته‌شدنه.</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="download" id="download" data-title="دانلود">
+  <div class="dl-card">
+    <img src="assets/img/logo.png" width="84" height="84" alt="">
+    <h2>شب‌پا رو بگیر و شبت رو بسپار بهش</h2>
+    <p class="dl-sub">ویندوز ۱۰ یا ۱۱ (۶۴ بیتی) · اگه دات‌نت ۱۰ نصب نباشه، نصاب خودش از سایت رسمی مایکروسافت می‌گیرتش</p>
+    <a class="btn btn-lg" id="dlBtn" href="https://github.com/MrPitPot/shabpa/releases/latest" rel="noopener">
+      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M12 3v12m0 0l-5-5m5 5l5-5M5 20h14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      دانلود نصاب <small id="dlVer"></small>
+    </a>
+    <dl class="dl-meta" id="dlMeta" hidden>
+      <div><dt>فایل</dt><dd id="dlFile"></dd></div>
+      <div><dt>حجم</dt><dd id="dlSize"></dd></div>
+      <div><dt>آخرین به‌روزرسانی</dt><dd id="dlDate"></dd></div>
+    </dl>
+    <div class="sha" id="shaBox" hidden>
+      <span>SHA-256</span>
+      <code id="shaVal" dir="ltr"></code>
+      <button type="button" class="copy" id="shaCopy">کپی</button>
+    </div>
+    <p class="dl-note">بعد از دانلود، می‌تونی SHA-256 فایل رو با مقدار بالا تطبیق بدی:
+      <code dir="ltr">Get-FileHash .\ShabpaSetup.exe</code></p>
+    <p class="dl-links"><a href="https://github.com/MrPitPot/shabpa/releases" rel="noopener">همه‌ی نسخه‌ها</a> · <a href="https://github.com/MrPitPot/shabpa/blob/main/CHANGELOG.md" rel="noopener">تغییرات</a> · <a href="https://github.com/MrPitPot/shabpa" rel="noopener">کد منبع</a></p>
+  </div>
+  <p class="shutdown" id="shutdown"><span>۰۳:۰۰</span> · شب‌پا کامپیوترت رو خاموش کرد. شب بخیر.</p>
+</section>
+
+<section class="faq" id="faq" data-title="سوالات">
+  <div class="card text wide">
+    <h2>سوالات پرتکرار</h2>
+    <details><summary>ویندوز یا مرورگر هشدار می‌ده، خطرناکه؟</summary>
+      <p>فعلاً نصاب امضای دیجیتال نداره، برای همین SmartScreen ممکنه هشدار بده. گرفتن امضای رایگان در دست اقدامه؛ شب‌پا هنوز نوپاست و برای تأیید امضا باید بیشتر دیده بشه. روی «More info» و بعد «Run anyway» بزن، و بهتره SHA-256 فایل رو با مقدار همین صفحه تطبیق بدی. کد کامل در گیت‌هاب قابل‌خوندنه.</p></details>
+    <details><summary>چرا بعضی آنتی‌ویروس‌ها می‌گن مشکوکه؟</summary>
+      <p>برای سقف سرعت هر برنامه، شب‌پا از درایور متن‌باز WinDivert استفاده می‌کنه که بعضی آنتی‌ویروس‌ها چون یه ابزار شبکه‌ست علامتش می‌زنن. اگه به این بخش نیاز نداری لازم نیست استفاده‌اش کنی.</p></details>
+    <details><summary>اطلاعاتم جایی فرستاده می‌شه؟</summary>
+      <p>نه. همه‌چیز روی کامپیوتر خودته. فقط وقتی خودت روشن کنی (به‌روزرسانی، آب و هوا، ربات تلگرام، تیکت پشتیبانی) اینترنت استفاده می‌شه.</p></details>
+    <details><summary>به‌روزرسانی چطوره؟</summary>
+      <p>برنامه نسخه‌ی جدید رو از گیت‌هاب می‌گیره و فقط وقتی SHA-256 فایل با مقدار منتشرشده بخونه، اجراش می‌کنه.</p></details>
+    <details><summary>چطور پاکش کنم؟</summary>
+      <p>مثل هر برنامه‌ی دیگه، از «Apps» یا «Installed apps» ویندوز حذفش کن. اطلاعات برنامه توی پوشه‌ی <code dir="ltr">%AppData%\Shabpa</code> می‌مونه و اگه خواستی دستی پاک می‌شه.</p></details>
+    <details><summary>یه باگ دیدم یا ایده دارم</summary>
+      <p>توی بخش پشتیبانی خود برنامه تیکت بساز یا از <a href="https://github.com/MrPitPot/shabpa/issues" rel="noopener">گیت‌هاب</a> بنویس. مشکل امنیتی رو لطفاً خصوصی گزارش کن: <a href="https://github.com/MrPitPot/shabpa/security/advisories/new" rel="noopener">Report a vulnerability</a>.</p></details>
+  </div>
+</section>
+</main>
+
+<footer class="foot">
+  <div>
+    <img src="assets/img/logo.png" width="28" height="28" alt="">
+    <span>شب‌پا · ساخته‌ی <a href="https://github.com/MrPitPot" rel="noopener">Mr.PitPot</a> · مجوز MIT</span>
+  </div>
+  <nav aria-label="پیوندها">
+    <a href="https://github.com/MrPitPot/shabpa" rel="noopener">گیت‌هاب</a>
+    <a href="https://github.com/MrPitPot/shabpa/blob/main/SECURITY.md" rel="noopener">امنیت</a>
+    <a href="https://github.com/MrPitPot/shabpa/blob/main/CODE_SIGNING_POLICY.md" rel="noopener">سیاست امضا</a>
+  </nav>
+</footer>
+
+<div class="off" id="off" role="dialog" aria-modal="true" aria-label="شبیه‌سازی خاموشی" hidden>
+  <div class="off-screen"></div>
+  <div class="off-msg"><p>شب بخیر 🌙</p><small>این فقط یه شبیه‌سازی بود؛ کامپیوترت سر جاشه.</small><button type="button" class="btn btn-sm" id="offWake">بیدار شو</button></div>
+</div>
+<dialog id="lightbox" aria-label="نمایش بزرگ تصویر"><button type="button" class="lb-close" id="lbClose" aria-label="بستن">×</button><img id="lbImg" alt=""></dialog>
+<noscript><p class="noscript">برای دیدن انیمیشن روز و شب، جاوااسکریپت رو روشن کن. بقیه‌ی سایت بدون اون هم کار می‌کنه.</p></noscript>
+</body>
+</html>
