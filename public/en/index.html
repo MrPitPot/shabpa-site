@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Shabpa | A night watch for your Windows PC</title>
+<meta name="description" content="Shabpa is a light Windows app for scheduled shutdown and sleep, a game overlay, per-app network limits, tasks and focus, backups and system health. Free and open source, in Persian and English.">
+<meta name="theme-color" content="#04061a">
+<meta name="color-scheme" content="dark light">
+<link rel="canonical" href="https://shabpa.ir/en/">
+<link rel="alternate" hreflang="fa" href="https://shabpa.ir/">
+<link rel="alternate" hreflang="en" href="https://shabpa.ir/en/">
+<link rel="alternate" hreflang="x-default" href="https://shabpa.ir/">
+<link rel="icon" href="/assets/img/logo.png" type="image/png">
+<link rel="apple-touch-icon" href="/assets/img/logo.png">
+<link rel="preload" href="/assets/fonts/Vazirmatn-Medium.woff2" as="font" type="font/woff2" crossorigin>
+<meta property="og:type" content="website">
+<meta property="og:locale" content="en_US">
+<meta property="og:locale:alternate" content="fa_IR">
+<meta property="og:site_name" content="Shabpa">
+<meta property="og:title" content="Shabpa | A night watch for your Windows PC">
+<meta property="og:description" content="Scheduled shutdown, game overlay, network tools, tasks, backups and system health in one light app. Free and open source.">
+<meta property="og:url" content="https://shabpa.ir/en/">
+<meta property="og:image" content="https://shabpa.ir/assets/img/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="/assets/style.css">
+<script src="/assets/main.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#download">Skip to download</a>
+
+<!-- Fixed sky: turns from day to night as you scroll -->
+<div class="sky" aria-hidden="true">
+  <div class="sky-grad"></div>
+  <canvas id="stars"></canvas>
+  <div class="sun"></div>
+  <div class="moon"><i></i><i></i><i></i></div>
+  <div class="clouds">
+    <span class="cloud c1"></span><span class="cloud c2"></span><span class="cloud c3"></span><span class="cloud c4"></span>
+  </div>
+  <svg class="horizon" viewBox="0 0 1600 320" preserveAspectRatio="xMidYMax slice" focusable="false">
+    <path class="hill hill-far" d="M0 320V190l90-38 120 46 130-70 150 62 110-48 140 74 120-60 160 52 130-86 110 70 140-42 120 56 90-30v174z"/>
+    <path class="hill hill-near" d="M0 320V240l140-34 110 24 160-44 140 38 180-30 120 30 150-38 130 28 160-20 110 22 100-18v140z"/>
+    <g class="city" id="city">
+      <path class="bld" d="M40 320v-62h34v-14h26v76zM130 320v-88h30v-10h22v98zM214 320v-56h46v56zM300 320v-104h26v-16h24v120zM390 320v-70h38v70zM470 320v-92h34v92zM560 320v-58h48v58zM650 320v-110h28v-12h20v122zM1200 320v-96h30v-12h26v108zM1290 320v-62h46v62zM1380 320v-108h26v-14h22v122zM1460 320v-74h38v74zM1530 320v-60h50v60z"/>
+      <g class="tower">
+        <path d="M912 320 L926 130 L934 130 L948 320 Z"/>
+        <path d="M919 150 L941 150 L945 176 L915 176 Z"/>
+        <path d="M886 118 L914 106 L946 106 L974 118 L960 134 L940 140 L920 140 L900 134 Z"/>
+        <path d="M918 106 L922 64 L938 64 L942 106 Z"/>
+        <rect x="928.6" y="8" width="2.8" height="58"/>
+        <circle class="beacon" cx="930" cy="8" r="3.4"/>
+      </g>
+    </g>
+  </svg>
+</div>
+
+<header class="top" id="top">
+  <a class="brand" href="#hero" aria-label="Shabpa">
+    <img src="/assets/img/logo.png" width="38" height="38" alt="">
+    <span>Shabpa</span>
+  </a>
+  <nav aria-label="Main menu">
+    <a href="#features">Features</a>
+    <a href="#themes">Look</a>
+    <a href="#trust">Privacy</a>
+    <a href="#faq">FAQ</a>
+  </nav>
+  <div class="clock" id="clock" aria-hidden="true"><span class="clock-ico" id="clockIco"></span><span id="clockTime">12:00</span></div>
+  <a class="lang" id="langSwitch" href="/" hreflang="fa" lang="fa" data-lang="fa" title="مشاهده‌ی سایت به فارسی">فارسی</a>
+  <a class="btn btn-sm" href="#download">Download</a>
+</header>
+
+<nav class="rail" id="rail" aria-label="Feature list"></nav>
+
+<main>
+<section class="hero" id="hero">
+  <div class="hero-in">
+    <p class="eyebrow reveal">Free · Open source · Windows 10 &amp; 11</p>
+    <h1 class="reveal">Shabpa,<br><span class="grad">the night watch for your PC</span></h1>
+    <p class="lead reveal">Shut your PC down on time, game without ping spikes, keep your tasks in order and know how your system is doing. All in one light app, in Persian and English.</p>
+    <div class="cta reveal">
+      <a class="btn" id="heroDl" href="https://github.com/MrPitPot/shabpa/releases/latest" rel="noopener">
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M12 3v12m0 0l-5-5m5 5l5-5M5 20h14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Download Shabpa <small id="heroVer"></small>
+      </a>
+      <a class="btn btn-ghost" href="#features">See what it does</a>
+    </div>
+    <p class="hint reveal"><span class="hint-dot"></span> Scroll down: day slowly turns into night</p>
+  </div>
+  <div class="hero-shot reveal" data-tilt>
+    <div class="win win-app"><img src="/assets/img/en/home.webp" width="1280" height="800" alt="Shabpa home screen: live system status and what is next" fetchpriority="high">
+    </div>
+  </div>
+</section>
+
+<section class="stats" aria-label="Shabpa at a glance">
+  <div class="stat reveal"><b data-count="21">21</b><span>color themes</span></div>
+  <div class="stat reveal"><b data-count="2">2</b><span>languages: Persian &amp; English</span></div>
+  <div class="stat reveal"><b data-count="10">10</b><span>feature areas in one app</span></div>
+  <div class="stat reveal"><b>MIT</b><span>open source &amp; free</span></div>
+</section>
+
+<div id="features">
+
+<article class="chap" data-title="Shutdown on time">
+  <div class="card text">
+    <span class="kick">01 · System control</span>
+    <h2>Shutdown on schedule, no surprises</h2>
+    <p>Shut down, sleep, hibernate or restart: right now, in a few minutes, or on a schedule. Every action shows a countdown first, and you can cancel it.</p>
+    <ul class="opts">
+      <li>When a download finishes, the PC goes idle or a program closes</li>
+      <li>Wake timers and repeating schedules (say, every night at 1:30)</li>
+      <li>Sleep and wake history</li>
+      <li>A command that arrives late (the PC was off) is dropped, never run by surprise</li>
+    </ul>
+  </div>
+  <figure class="shot" data-tilt><div class="win win-app"><img loading="lazy" src="/assets/img/en/power.webp" width="1280" height="800" alt="System control: shut down, sleep, hibernate and restart with a countdown"></div></figure>
+</article>
+
+<article class="chap flip" data-title="Tasks &amp; focus">
+  <div class="card text">
+    <span class="kick">02 · Tasks &amp; focus</span>
+    <h2>Tasks in order, focus intact</h2>
+    <p>A to-do list with deadlines, reminders and categories, plus a focus timer that nudges you to take a short break after every round.</p>
+    <ul class="opts">
+      <li>Focus and break timer with your own durations</li>
+      <li>Deadline reminders</li>
+      <li>A weekly report of how much you got done</li>
+    </ul>
+  </div>
+  <figure class="shot" data-tilt><div class="win win-app"><img loading="lazy" src="/assets/img/en/focus.webp" width="1280" height="800" alt="25-minute focus timer"></div></figure>
+</article>
+
+<article class="chap" data-title="Files &amp; backup">
+  <div class="card text">
+    <span class="kick">03 · Files &amp; backup</span>
+    <h2>Folders safe, disk light</h2>
+    <p>Scheduled folder backups with verification. Restore never overwrites your current files.</p>
+    <ul class="opts">
+      <li>Disk space analysis and a duplicate finder</li>
+      <li>Clean-up of temp and cache files, with sizes shown before deleting</li>
+      <li>Anything deleted goes to the Recycle Bin only</li>
+    </ul>
+  </div>
+  <figure class="shot" data-tilt><div class="win win-app"><img loading="lazy" src="/assets/img/en/backup.webp" width="1280" height="800" alt="Disk space analysis: biggest files and folders"></div></figure>
+</article>
+
+<article class="chap flip" data-title="Health &amp; security">
+  <div class="card text">
+    <span class="kick">04 · Health &amp; security</span>
+    <h2>Your system's health, in plain language</h2>
+    <p>Instead of cryptic event codes, it explains errors in plain words and tells you what to do.</p>
+    <ul class="opts">
+      <li>Checks for disk, Windows updates and services</li>
+      <li>Firewall, Defender and UAC status</li>
+      <li>Startup-program watch and program and driver update checks</li>
+      <li>A redacted report with no personal data, ready to send</li>
+    </ul>
+  </div>
+  <figure class="shot" data-tilt><div class="win win-app"><img loading="lazy" src="/assets/img/en/health.webp" width="1280" height="800" alt="Health and security: system health score and drive status"></div></figure>
+</article>
+
+<article class="chap" data-title="Profiles">
+  <div class="card text">
+    <span class="kick">05 · Profiles</span>
+    <h2>Change the mood of your PC in one click</h2>
+    <p>Study, work, rest and night profiles run several things at once: screen brightness, volume, focus timer, break reminders and more.</p>
+    <ul class="opts">
+      <li>Start automatically by time or when a game launches</li>
+      <li>Run history and undo</li>
+      <li>Export and import to share with friends</li>
+    </ul>
+  </div>
+  <figure class="shot" data-tilt><div class="win win-app"><img loading="lazy" src="/assets/img/en/profiles.webp" width="1280" height="800" alt="Study and work profiles"></div></figure>
+</article>
+
+<article class="chap flip" data-title="Game overlay">
+  <div class="card text">
+    <span class="kick">06 · Game overlay</span>
+    <h2>System info over your game, your way</h2>
+    <p>FPS, 1% low, GPU and CPU temperature, RAM and ping, in six layouts with your own colors and size.</p>
+    <ul class="opts">
+      <li>A separate profile per game and a report after each session</li>
+      <li>Drag the overlay anywhere with the mouse</li>
+      <li>Nothing is injected into games, so anti-cheat stays happy</li>
+    </ul>
+  </div>
+  <figure class="shot" data-tilt><div class="win win-app"><img loading="lazy" src="/assets/img/en/overlay.webp" width="1280" height="800" alt="Game overlay settings"></div></figure>
+</article>
+
+<article class="chap" data-title="Network &amp; ping">
+  <div class="card text">
+    <span class="kick">07 · Network &amp; ping</span>
+    <h2>See what eats your internet, and stop it</h2>
+    <p>While you game, in-game protection automatically caps upload and download of other apps so your ping stays flat. When the game closes, everything is released.</p>
+    <ul class="opts">
+      <li>Live ping and a stability chart</li>
+      <li>Per-app traffic, speed caps or blocking</li>
+      <li>Usage history and a monthly allowance</li>
+      <li>Quick DNS switcher</li>
+    </ul>
+  </div>
+  <figure class="shot" data-tilt><div class="win win-app"><img loading="lazy" src="/assets/img/en/ping.webp" width="1280" height="800" alt="Ping stability and in-game protection"></div></figure>
+</article>
+
+<article class="chap flip" data-title="Comfort &amp; rest">
+  <div class="card text">
+    <span class="kick">08 · Comfort &amp; rest</span>
+    <h2>Go easy on your eyes at night</h2>
+    <p>Dim the screen even below your monitor's own minimum, use a warm tint at night and get break reminders.</p>
+    <ul class="opts">
+      <li>Night light with adjustable color temperature</li>
+      <li>Auto-dim during your night hours</li>
+      <li>Keyboard shortcuts to toggle and to dim or brighten</li>
+      <li>Sleep mode and a microphone level test</li>
+    </ul>
+  </div>
+  <figure class="shot" data-tilt><div class="win win-app"><img loading="lazy" src="/assets/img/en/comfort.webp" width="1280" height="800" alt="Screen dimming and warm tint"></div></figure>
+</article>
+
+<article class="chap" data-title="Weather">
+  <div class="card text">
+    <span class="kick">09 · Weather</span>
+    <h2>Watch your own sky too</h2>
+    <p>Search your city for the current weather, an hourly forecast and 8 days ahead, under an animated sky that changes between day and night.</p>
+  </div>
+  <figure class="shot" data-tilt><div class="win win-app"><img loading="lazy" src="/assets/img/en/weather.webp" width="1280" height="800" alt="Weather with an animated sky"></div></figure>
+</article>
+
+<article class="chap flip" data-title="Remote control">
+  <div class="card text">
+    <span class="kick">10 · Remote control</span>
+    <h2>Manage your PC from Telegram</h2>
+    <p>Optional, and linked with a one-time code. The app never sees the bot's token, and only a fixed list of commands can run.</p>
+    <ul class="opts">
+      <li>System status, shut down and restart with an on-screen countdown</li>
+      <li>Dim the screen, volume, start and stop focus</li>
+      <li>A command older than 3 minutes never runs</li>
+    </ul>
+  </div>
+  <figure class="shot chat" data-tilt aria-label="Example chat with the bot">
+    <div class="win"><div class="win-bar"><i></i><i></i><i></i></div>
+      <div class="chat-body">
+        <p class="bub me">Status?</p>
+        <p class="bub bot">Your PC is on. CPU 42%, RAM 18 GB. It has been up for 18 hours.</p>
+        <p class="bub me">Shut it down at 1 am</p>
+        <p class="bub bot">OK. At 01:00, with a 60-second countdown on screen. Go ahead?</p>
+      </div>
+    </div>
+  </figure>
+</article>
+
+</div>
+
+<section class="try" id="try" data-title="Try it">
+  <div class="card text try-card">
+    <div>
+      <span class="kick">11 · Try it</span>
+      <h2>Simulate a shutdown right here</h2>
+      <p>This is only a demo and never touches your PC. In the real app, every shutdown also shows a countdown first, and you can cancel it at any moment.</p>
+    </div>
+    <div class="sim" id="sim">
+      <div class="seg" id="seg" role="radiogroup" aria-label="Command type">
+        <button type="button" role="radio" aria-checked="true" data-act="Shutting down" class="on">Shut down</button>
+        <button type="button" role="radio" aria-checked="false" data-act="Going to sleep">Sleep</button>
+        <button type="button" role="radio" aria-checked="false" data-act="Hibernating">Hibernate</button>
+      </div>
+      <div class="ring" id="ring"><svg viewBox="0 0 120 120" aria-hidden="true"><circle class="ring-bg" cx="60" cy="60" r="52"/><circle class="ring-fg" id="ringFg" cx="60" cy="60" r="52"/></svg><div class="ring-n" id="simNum">10</div></div>
+      <p class="sim-msg" id="simMsg" role="status">Ready? Press the button.</p>
+      <div class="sim-btns">
+        <button type="button" class="btn btn-sm" id="simGo">Start countdown</button>
+        <button type="button" class="btn btn-sm btn-ghost" id="simCancel" disabled>Cancel</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="themes" id="themes" data-title="Look">
+  <div class="card text wide">
+    <span class="kick">12 · Look</span>
+    <h2>21 color themes, Persian and English, light and dark</h2>
+    <p>Make Shabpa yours: from forest green to neon, from midnight dark to daylight bright. The interface comes in both Persian and English, and you can switch with one click.</p>
+  </div>
+  <div class="themes-row">
+    <figure class="shot" data-tilt><div class="win win-app"><img loading="lazy" src="/assets/img/en/theme-sunset.webp" width="1280" height="800" alt="Sunset theme with warm colors"></div><figcaption>Sunset</figcaption></figure>
+    <figure class="shot" data-tilt><div class="win win-app"><img loading="lazy" src="/assets/img/en/theme-pink.webp" width="1280" height="800" alt="Pink light theme"></div><figcaption>Pink (light)</figcaption></figure>
+    <figure class="shot" data-tilt><div class="win win-app"><img loading="lazy" src="/assets/img/en/theme-forest.webp" width="1280" height="800" alt="Forest green theme"></div><figcaption>Forest green</figcaption></figure>
+  </div>
+</section>
+
+<section class="trust" id="trust" data-title="Privacy">
+  <div class="card text wide">
+    <span class="kick">13 · Privacy</span>
+    <h2>Whatever it is, it stays on your PC</h2>
+    <div class="trust-grid">
+      <div><b>Your data stays yours</b><span>Everything is stored in your own AppData folder, and the app reports nothing anywhere. Only this website collects anonymous, cookie-free visit counts.</span></div>
+      <div><b>Online only when you switch it on</b><span>Update checks, weather, the bot link and support tickets.</span></div>
+      <div><b>It always asks first</b><span>Every schedule, deletion or clean-up shows its exact effect and asks for confirmation.</span></div>
+      <div><b>Open source, MIT license</b><span>All the code is readable and buildable on GitHub.</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="download" id="download" data-title="Download">
+  <div class="dl-card">
+    <img src="/assets/img/logo.png" width="84" height="84" alt="">
+    <h2>Get Shabpa and leave your nights to it</h2>
+    <p class="dl-sub">Windows 10 or 11 (64-bit) · If .NET 10 is missing, the installer fetches it from Microsoft's official site</p>
+    <a class="btn btn-lg" id="dlBtn" href="https://github.com/MrPitPot/shabpa/releases/latest" rel="noopener">
+      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M12 3v12m0 0l-5-5m5 5l5-5M5 20h14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Download installer <small id="dlVer"></small>
+    </a>
+    <dl class="dl-meta" id="dlMeta" hidden>
+      <div><dt>File</dt><dd id="dlFile"></dd></div>
+      <div><dt>Size</dt><dd id="dlSize"></dd></div>
+      <div><dt>Last updated</dt><dd id="dlDate"></dd></div>
+    </dl>
+    <div class="sha" id="shaBox" hidden>
+      <span>SHA-256</span>
+      <code id="shaVal" dir="ltr"></code>
+      <button type="button" class="copy" id="shaCopy">Copy</button>
+    </div>
+    <p class="dl-note">After downloading, you can compare the file's SHA-256 with the value above:
+      <code dir="ltr">Get-FileHash .\ShabpaSetup.exe</code></p>
+    <p class="dl-links"><a href="https://github.com/MrPitPot/shabpa/releases" rel="noopener">All releases</a> · <a href="https://github.com/MrPitPot/shabpa/blob/main/CHANGELOG.md" rel="noopener">Changelog</a> · <a href="https://github.com/MrPitPot/shabpa" rel="noopener">Source code</a></p>
+  </div>
+  <p class="shutdown" id="shutdown"><span>03:00</span> · Shabpa shut your PC down. Good night.</p>
+</section>
+
+<section class="faq" id="faq" data-title="FAQ">
+  <div class="card text wide">
+    <h2>Frequently asked questions</h2>
+    <details><summary>Windows or my browser shows a warning. Is it dangerous?</summary>
+      <p>The installer is not code-signed yet, so SmartScreen may warn you. Getting a free signing certificate is in progress; Shabpa is still new and needs more visibility before it can be approved. Click "More info", then "Run anyway", and ideally compare the file's SHA-256 with the value on this page. All the code is readable on GitHub.</p></details>
+    <details><summary>Why do some antivirus programs flag it?</summary>
+      <p>For per-app speed limits, Shabpa uses the open-source WinDivert driver, which some antivirus products flag because it is a network tool. If you don't need that feature, you don't have to use it.</p></details>
+    <details><summary>Is my data sent anywhere?</summary>
+      <p>Not by the app. Everything stays on your PC. The internet is only used when you switch something on (updates, weather, the Telegram bot, support tickets).</p></details>
+    <details><summary>How do updates work?</summary>
+      <p>The app fetches the new version from GitHub and only runs it if the file's SHA-256 matches the published value.</p></details>
+    <details><summary>How do I uninstall it?</summary>
+      <p>Like any other app, from Windows "Apps" or "Installed apps". App data stays in <code dir="ltr">%AppData%\Shabpa</code>, and you can delete it by hand if you want.</p></details>
+    <details><summary>I found a bug or have an idea</summary>
+      <p>Open a ticket from the app's Support page or write on <a href="https://github.com/MrPitPot/shabpa/issues" rel="noopener">GitHub</a>. Please report security issues privately: <a href="https://github.com/MrPitPot/shabpa/security/advisories/new" rel="noopener">Report a vulnerability</a>.</p></details>
+  </div>
+</section>
+</main>
+
+<footer class="foot">
+  <div>
+    <img src="/assets/img/logo.png" width="28" height="28" alt="">
+    <span>Shabpa · made by <a href="https://github.com/MrPitPot" rel="noopener">Mr.PitPot</a> · MIT license</span>
+  </div>
+  <nav aria-label="Links">
+    <a href="https://github.com/MrPitPot/shabpa" rel="noopener">GitHub</a>
+    <a href="https://github.com/MrPitPot/shabpa/blob/main/SECURITY.md" rel="noopener">Security</a>
+    <a href="https://github.com/MrPitPot/shabpa/blob/main/CODE_SIGNING_POLICY.md" rel="noopener">Signing policy</a>
+  </nav>
+</footer>
+
+<div class="off" id="off" role="dialog" aria-modal="true" aria-label="Shutdown simulation" hidden>
+  <div class="off-screen"></div>
+  <div class="off-msg"><p>Good night 🌙</p><small>This was only a simulation; your PC is right where you left it.</small><button type="button" class="btn btn-sm" id="offWake">Wake up</button></div>
+</div>
+<dialog id="lightbox" aria-label="Enlarged image"><button type="button" class="lb-close" id="lbClose" aria-label="Close">×</button><img id="lbImg" alt=""></dialog>
+<noscript><p class="noscript">Turn on JavaScript to see the day-to-night animation. The rest of the site works without it.</p></noscript>
+</body>
+</html>

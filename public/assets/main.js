@@ -4,8 +4,21 @@
   var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   var $ = function (s, c) { return (c || document).querySelector(s); };
   var $$ = function (s, c) { return Array.prototype.slice.call((c || document).querySelectorAll(s)); };
+  var LANG = document.documentElement.lang === "en" ? "en" : "fa";
+  var T = {
+    fa: {
+      mb: " مگابایت", copy: "کپی", copied: "کپی شد", locale: "fa-IR",
+      say: function (act, n) { return "سیستم " + act + " می‌شه؛ قبلش " + n + " ثانیه فرصت لغو داری."; },
+      canceled: "لغو شد. هیچ اتفاقی نیفتاد، همین‌قدر ساده.", done: "تموم شد.", woke: "بیدار شدی! دوباره امتحانش کن."
+    },
+    en: {
+      mb: " MB", copy: "Copy", copied: "Copied", locale: "en-US",
+      say: function (act, n) { return act + " in " + n + " s. You can still cancel."; },
+      canceled: "Canceled. Nothing happened, just that simple.", done: "Done.", woke: "You're back! Try it again."
+    }
+  }[LANG];
   var FA = "۰۱۲۳۴۵۶۷۸۹";
-  var fa = function (v) { return String(v).replace(/\d/g, function (d) { return FA[d]; }); };
+  var fa = function (v) { return LANG === "en" ? String(v) : String(v).replace(/\d/g, function (d) { return FA[d]; }); };
   var clamp = function (v, a, b) { return Math.min(b, Math.max(a, v)); };
   var smooth = function (t) { t = clamp(t, 0, 1); return t * t * (3 - 2 * t); };
   var lerp = function (a, b, t) { return a + (b - a) * t; };
@@ -201,9 +214,9 @@
     ["#heroDl", "#dlBtn"].forEach(function (s) { $(s).href = asset.browser_download_url; });
     $("#heroVer").textContent = "v" + ver; $("#dlVer").textContent = "v" + ver;
     $("#dlFile").textContent = asset.name;
-    $("#dlSize").textContent = fa((asset.size / 1048576).toFixed(1)) + " مگابایت";
+    $("#dlSize").textContent = fa((asset.size / 1048576).toFixed(1)) + T.mb;
     var dt = new Date(d.published_at);
-    if (!isNaN(dt)) $("#dlDate").textContent = new Intl.DateTimeFormat("fa-IR", { dateStyle: "long" }).format(dt);
+    if (!isNaN(dt)) $("#dlDate").textContent = new Intl.DateTimeFormat(T.locale, { dateStyle: "long" }).format(dt);
     $("#dlMeta").hidden = false;
     var m = /^sha256:([0-9a-f]{64})$/i.exec(asset.digest || "");
     if (m) { $("#shaVal").textContent = m[1].toLowerCase(); $("#shaBox").hidden = false; }
@@ -225,7 +238,7 @@
 
   $("#shaCopy").addEventListener("click", function () {
     var btn = this, v = $("#shaVal").textContent;
-    var done = function () { btn.textContent = "کپی شد"; setTimeout(function () { btn.textContent = "کپی"; }, 1800); };
+    var done = function () { btn.textContent = T.copied; setTimeout(function () { btn.textContent = T.copy; }, 1800); };
     if (navigator.clipboard) navigator.clipboard.writeText(v).then(done, function () {});
   });
 
@@ -250,7 +263,7 @@
   (function sim() {
     var seg = $("#seg"), ring = $("#ring"), fg = $("#ringFg"), num = $("#simNum"), msg = $("#simMsg");
     var go = $("#simGo"), cancel = $("#simCancel"), off = $("#off"), wake = $("#offWake");
-    var TOTAL = 10, CIRC = 326.7, act = "خاموش", left = TOTAL, timer = 0;
+    var TOTAL = 10, CIRC = 326.7, act = $(".on", seg).getAttribute("data-act"), left = TOTAL, timer = 0;
     function paint() {
       num.textContent = fa(left);
       fg.style.strokeDashoffset = String((CIRC * (TOTAL - left) / TOTAL).toFixed(1));
@@ -266,7 +279,7 @@
       $$("button", seg).forEach(function (x) { var on = x === b; x.classList.toggle("on", on); x.setAttribute("aria-checked", on ? "true" : "false"); });
       act = b.getAttribute("data-act");
     });
-    function say() { msg.textContent = "سیستم " + act + " می‌شه؛ قبلش " + fa(left) + " ثانیه فرصت لغو داری."; }
+    function say() { msg.textContent = T.say(act, fa(left)); }
     go.addEventListener("click", function () {
       if (timer) return;
       left = TOTAL; ring.classList.add("run"); seg.classList.add("locked"); go.disabled = true; cancel.disabled = false; say(); paint();
@@ -275,18 +288,48 @@
         if (left <= 0) { clearInterval(timer); timer = 0; finish(); } else say();
       }, 1000);
     });
-    cancel.addEventListener("click", function () { reset("لغو شد. هیچ اتفاقی نیفتاد، همین‌قدر ساده."); });
+    cancel.addEventListener("click", function () { reset(T.canceled); });
     function finish() {
-      msg.textContent = "تموم شد.";
+      msg.textContent = T.done;
       off.hidden = false; wake.focus();
     }
     function wakeUp() {
-      off.hidden = true; reset("بیدار شدی! دوباره امتحانش کن.");
+      off.hidden = true; reset(T.woke);
       go.focus({ preventScroll: true });
     }
     wake.addEventListener("click", wakeUp);
     document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !off.hidden) wakeUp(); });
     paint();
+  })();
+
+  /* ---------- زبان: دکمه‌ی بالا + پیشنهاد یک‌باره ---------- */
+  (function lang() {
+    var KEY = "shabpa-lang", sw = $("#langSwitch");
+    function get() { try { return localStorage.getItem(KEY); } catch (e) { return null; } }
+    function set(v) { try { localStorage.setItem(KEY, v); } catch (e) { /* ignore */ } }
+    if (sw) sw.addEventListener("click", function (e) {
+      set(sw.getAttribute("data-lang"));
+      if (location.hash) { e.preventDefault(); location.href = sw.getAttribute("href") + location.hash; }
+    });
+    var pref = get();
+    if (pref === "fa" || pref === "en") {
+      /* کاربری که قبلاً انگلیسی رو انتخاب کرده، روی صفحه‌ی اصلی به نسخه‌ی خودش می‌رسه (لینک مستقیم /en/ هیچ‌وقت منحرف نمی‌شه) */
+      if (pref === "en" && LANG === "fa" && location.pathname === "/" && !location.hash) location.replace("/en/");
+      return;
+    }
+    var langs = navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language || ""];
+    var wantsFa = /^fa/i.test(langs[0] || "");
+    if ((LANG === "fa") === wantsFa) return;
+    var other = LANG === "fa" ? "en" : "fa";
+    var bar = document.createElement("div"); bar.className = "lang-bar"; bar.setAttribute("role", "region");
+    var a = document.createElement("a"); a.className = "btn btn-sm";
+    a.href = other === "en" ? "/en/" : "/"; a.setAttribute("hreflang", other);
+    var x = document.createElement("button"); x.type = "button"; x.className = "lang-x";
+    if (other === "en") { bar.setAttribute("aria-label", "Language"); bar.lang = "en"; bar.dir = "ltr"; a.textContent = "View in English"; x.textContent = "No thanks"; }
+    else { bar.setAttribute("aria-label", "زبان"); bar.lang = "fa"; bar.dir = "rtl"; a.textContent = "مشاهده‌ی سایت به فارسی"; x.textContent = "نه، ممنون"; }
+    a.addEventListener("click", function () { set(other); });
+    x.addEventListener("click", function () { set(LANG); bar.remove(); });
+    bar.appendChild(a); bar.appendChild(x); document.body.appendChild(bar);
   })();
 
   sizeStars(); update();

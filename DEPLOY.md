@@ -1,6 +1,7 @@
 # راه‌اندازی و امنیت سایت ShabPa.ir
 
 ## وضعیت فعلی (دیپلوی‌شده)
+- دو زبانه: فارسی در `public/index.html` (آدرس `/`) و انگلیسی در `public/en/index.html` (آدرس `/en/`) با عکس‌های رابط انگلیسی در `public/assets/img/en/`. هر تغییر متن باید توی هر دو فایل انجام بشه. دکمه‌ی زبان و پیشنهاد یک‌باره‌ی زبان توی `main.js` (بخش «زبان»).
 - ریپو: <https://github.com/MrPitPot/shabpa-site>؛ سایت همون پوشه‌ی `public/` هست.
 - هاست: Cloudflare (Workers با static assets، همون Pages جدید)، پروژه‌ی `shabpa`. دیپلوی: `npx wrangler deploy` از ریشه‌ی ریپو.
 - دامنه‌ها: `shabpa.ir` و `www.shabpa.ir` به‌عنوان custom domain وصل شدن. آدرس workers.dev خاموشه.

@@ -274,6 +274,21 @@ figcaption{margin-top:12px;text-align:center;font-weight:600;font-size:15px;colo
 }
 @media(prefers-reduced-motion:reduce){.off-screen{animation:none;opacity:0}.off-msg{animation:none;opacity:1}.ring-fg{transition:none}}
 
+
+/* ---------- زبان ---------- */
+.lang{font-weight:600;font-size:14.5px;text-decoration:none;color:var(--fg);padding:6px 14px;border-radius:999px;border:1px solid var(--card-b);background:rgba(127,127,200,.12);transition:background .2s;white-space:nowrap}
+.lang:hover{background:rgba(127,127,200,.28)}
+.lang-bar{position:fixed;inset-inline:12px;bottom:14px;z-index:60;margin-inline:auto;max-width:420px;display:flex;align-items:center;justify-content:center;gap:14px;padding:10px 16px;border-radius:999px;background:var(--card);border:1px solid var(--card-b);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:var(--shadow);animation:fadein .6s .8s both}
+.lang-x{font:500 14px var(--font);color:var(--dim);background:none;border:0;cursor:pointer;padding:6px 8px}
+.lang-x:hover{color:var(--fg)}
+html[lang=en] body{line-height:1.75}
+html[lang=en] .hero h1{line-height:1.15}
+html[lang=en] .text h2{line-height:1.35}
+html[lang=en] .kick{letter-spacing:.03em}
+html[lang=en] .top nav a{font-size:15px}
+@media(max-width:560px){.clock{display:none}.top{gap:8px}.lang{padding:5px 11px}}
+@media(prefers-reduced-motion:reduce){.lang-bar{animation:none}}
+
 /* ---------- ۴۰۴ ---------- */
 .page404{--sky-a:#04061a;--sky-b:#0a0d33;--sky-c:#171250;color:#eef0ff}
 .nf{min-height:100svh;display:grid;place-content:center;justify-items:center;gap:14px;text-align:center;padding:24px}
