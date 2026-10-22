@@ -1,7 +1,12 @@
 // Builds a self-contained static copy of the site that can be uploaded to any web host
 // (for example a host inside Iran, where Cloudflare / foreign sites are often filtered).
 //
-//   node tools/build-iran-mirror.mjs [outDir]        (default: dist-iran)
+//   node tools/build-iran-mirror.mjs [outDir] [--subpath]
+//
+//   default      expects to be served from the root of a domain (e.g. https://iran.shabpa.ir/)
+//   --subpath    works when served from a folder of a plain object-storage bucket, where there is no
+//                automatic index page: every link points at an explicit index.html and uses relative paths
+//                (e.g. https://shabpa-dl.s3.ir-thr-at1.arvanstorage.ir/site/index.html)
 //
 // It copies public/, downloads the latest Shabpa installer from the official GitHub release,
 // verifies its SHA-256 against the digest GitHub publishes, and writes:
@@ -17,7 +22,9 @@ import path from "node:path";
 const REPO = "MrPitPot/shabpa";
 const FILE = "ShabpaSetup.exe";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const out = path.resolve(process.argv[2] || path.join(root, "dist-iran"));
+const args = process.argv.slice(2);
+const subpath = args.includes("--subpath");
+const out = path.resolve(args.find((a) => !a.startsWith("--")) || path.join(root, subpath ? "dist-iran-subpath" : "dist-iran"));
 
 const rel = await (await fetch(`https://api.github.com/repos/${REPO}/releases/latest`, {
   headers: { Accept: "application/vnd.github+json", "User-Agent": "shabpa-site-mirror" },
@@ -39,8 +46,25 @@ await mkdir(path.join(out, "api"), { recursive: true });
 await writeFile(path.join(out, "download", FILE), buf);
 await writeFile(path.join(out, "api", "latest"), JSON.stringify({
   version: rel.tag_name.slice(1), published: rel.published_at, file: FILE, size: asset.size, sha256: sha,
-  github: asset.browser_download_url, url: `/download/${FILE}`,
+  github: asset.browser_download_url, url: subpath ? `download/${FILE}` : `/download/${FILE}`,
 }));
+
+if (subpath) {
+  // Every page learns where the site root is (meta site-root) and that links need an explicit index.html.
+  const pages = [["index.html", "./", (h) => h.replace('href="/en/"', 'href="en/index.html"')],
+                 ["en/index.html", "../", (h) => h.replace(/(id="langSwitch" href=)"\/"/, '$1"../index.html"')]];
+  for (const [file, prefix, fix] of pages) {
+    let html = await readFile(path.join(out, file), "utf8");
+    html = fix(html);
+    html = html.replace(/(href|src)="\/assets\//g, `$1="${prefix === "./" ? "" : prefix}assets/`);
+    html = html.replace('<meta charset="utf-8">', `<meta charset="utf-8">\n<meta name="site-root" content="${prefix}">\n<meta name="site-index" content="index.html">`);
+    const stray = html.match(/(href|src)="\/(?!\/)[^"]*"/g);
+    if (stray) throw new Error(`${file}: root-absolute links left: ${stray.join(", ")}`);
+    await writeFile(path.join(out, file), html);
+  }
+  for (const f of ["404.html", "robots.txt", "sitemap.xml"]) await rm(path.join(out, f), { force: true });
+  await rm(path.join(out, ".well-known"), { recursive: true, force: true });
+}
 
 // the Cloudflare-only file becomes a plain-text reference for configuring the new host
 const headers = await readFile(path.join(out, "_headers"), "utf8");
@@ -49,4 +73,4 @@ await writeFile(path.join(out, "HOST-HEADERS.txt"),
   "Security headers the site was designed to be served with (translate to your web server's syntax).\n" +
   "Also: serve /api/latest with Content-Type application/json, redirect http->https and www->bare domain.\n\n" + headers);
 
-console.log(`Done. Upload the contents of: ${out}`);
+console.log(`Done${subpath ? " (subpath mode)" : ""}. Upload the contents of: ${out}`);

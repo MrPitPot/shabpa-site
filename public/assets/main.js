@@ -5,6 +5,10 @@
   var $ = function (s, c) { return (c || document).querySelector(s); };
   var $$ = function (s, c) { return Array.prototype.slice.call((c || document).querySelectorAll(s)); };
   var LANG = document.documentElement.lang === "en" ? "en" : "fa";
+  /* ریشه‌ی سایت: روی shabpa.ir همون "/" ؛ روی آینه‌ای که توی یه زیرپوشه میزبانی می‌شه، صفحه با meta می‌گه ریشه کجاست */
+  function meta(n) { var m = document.querySelector('meta[name="' + n + '"]'); return m ? m.getAttribute("content") : null; }
+  var ROOT = new URL(meta("site-root") || "/", location.href).href;
+  var INDEX = meta("site-index") || "";
   var T = {
     fa: {
       mb: " مگابایت", copy: "کپی", copied: "کپی شد", locale: "fa-IR",
@@ -236,8 +240,9 @@
   /* ---------- آخرین نسخه (از خود سایت؛ سرور اطلاعات و فایل رو از GitHub می‌گیره و کش می‌کنه) ---------- */
   var OK_URL = /^https:\/\/github\.com\/MrPitPot\/shabpa\/releases\/download\/v\d+\.\d+\.\d+\/ShabpaSetup\.exe$/;
   function applyRelease(d) {
-    if (!d || typeof d.version !== "string" || !/^\d+\.\d+\.\d+$/.test(d.version) || d.url !== "/download/ShabpaSetup.exe") return;
-    ["#heroDl", "#dlBtn"].forEach(function (s) { $(s).href = d.url; });
+    if (!d || typeof d.version !== "string" || !/^\d+\.\d+\.\d+$/.test(d.version) || (d.url !== "/download/ShabpaSetup.exe" && d.url !== "download/ShabpaSetup.exe")) return;
+    var dlHref = new URL(d.url, ROOT).href;
+    ["#heroDl", "#dlBtn"].forEach(function (s) { $(s).href = dlHref; });
     $("#heroVer").textContent = "v" + d.version; $("#dlVer").textContent = "v" + d.version;
     $("#dlFile").textContent = d.file;
     $("#dlSize").textContent = fa((d.size / 1048576).toFixed(1)) + T.mb;
@@ -250,15 +255,15 @@
   }
   (function fetchRelease() {
     var cached = null;
-    try { cached = JSON.parse(sessionStorage.getItem("shabpa-rel2") || "null"); } catch (e) { /* ignore */ }
+    try { cached = JSON.parse(sessionStorage.getItem("shabpa-rel3") || "null"); } catch (e) { /* ignore */ }
     if (cached && Date.now() - cached.t < 600000) { applyRelease(cached.d); return; }
     var ctl = "AbortController" in window ? new AbortController() : null;
     var to = setTimeout(function () { if (ctl) ctl.abort(); }, 10000);
-    fetch("/api/latest", { signal: ctl ? ctl.signal : undefined, credentials: "omit" })
+    fetch(ROOT + "api/latest", { signal: ctl ? ctl.signal : undefined, credentials: "omit" })
       .then(function (r) { if (!r.ok) throw 0; return r.json(); })
       .then(function (d) {
         clearTimeout(to); applyRelease(d);
-        try { sessionStorage.setItem("shabpa-rel2", JSON.stringify({ t: Date.now(), d: d })); } catch (e) { /* ignore */ }
+        try { sessionStorage.setItem("shabpa-rel3", JSON.stringify({ t: Date.now(), d: d })); } catch (e) { /* ignore */ }
       })
       .catch(function () { /* لینک ثابت «آخرین نسخه» توی GitHub می‌مونه */ });
   })();
@@ -341,7 +346,8 @@
     var pref = get();
     if (pref === "fa" || pref === "en") {
       /* کاربری که قبلاً انگلیسی رو انتخاب کرده، روی صفحه‌ی اصلی به نسخه‌ی خودش می‌رسه (لینک مستقیم /en/ هیچ‌وقت منحرف نمی‌شه) */
-      if (pref === "en" && LANG === "fa" && location.pathname === "/" && !location.hash) location.replace("/en/");
+      var rootPath = new URL(ROOT).pathname, onRoot = location.pathname === rootPath || location.pathname === rootPath + INDEX;
+      if (pref === "en" && LANG === "fa" && onRoot && !location.hash) location.replace(ROOT + "en/" + INDEX);
       return;
     }
     var langs = navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language || ""];
@@ -350,7 +356,7 @@
     var other = LANG === "fa" ? "en" : "fa";
     var bar = document.createElement("div"); bar.className = "lang-bar"; bar.setAttribute("role", "region");
     var a = document.createElement("a"); a.className = "btn btn-sm";
-    a.href = other === "en" ? "/en/" : "/"; a.setAttribute("hreflang", other);
+    a.href = other === "en" ? ROOT + "en/" + INDEX : ROOT + INDEX; a.setAttribute("hreflang", other);
     var x = document.createElement("button"); x.type = "button"; x.className = "lang-x";
     if (other === "en") { bar.setAttribute("aria-label", "Language"); bar.lang = "en"; bar.dir = "ltr"; a.textContent = "View in English"; x.textContent = "No thanks"; }
     else { bar.setAttribute("aria-label", "زبان"); bar.lang = "fa"; bar.dir = "rtl"; a.textContent = "مشاهده‌ی سایت به فارسی"; x.textContent = "نه، ممنون"; }
