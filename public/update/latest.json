@@ -1,0 +1,10 @@
+{
+  "schema": 1,
+  "version": "3.11.0",
+  "minAppVersion": "0.0.0",
+  "published": "2026-10-22T18:49:56Z",
+  "sha256": "2070d1eb12d488f96f392315da883418b6aed4cb122889373f0bd287d3012a5e",
+  "size": 6848512,
+  "urls": ["https://github.com/MrPitPot/shabpa/releases/download/v3.11.0/ShabpaSetup.exe", "https://shabpa.ir/update/ShabpaSetup.exe", "https://shabpa-dl.s3.ir-central1.arvanstorage.ir/update/ShabpaSetup.exe", "https://dl.shabpa.ir/update/ShabpaSetup.exe"],
+  "notes": { "fa": "", "en": "" }
+}
