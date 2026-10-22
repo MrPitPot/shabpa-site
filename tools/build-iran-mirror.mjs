@@ -62,9 +62,13 @@ if (subpath) {
     if (stray) throw new Error(`${file}: root-absolute links left: ${stray.join(", ")}`);
     await writeFile(path.join(out, file), html);
   }
-  for (const f of ["404.html", "robots.txt", "sitemap.xml"]) await rm(path.join(out, f), { force: true });
+  for (const f of ["robots.txt", "sitemap.xml"]) await rm(path.join(out, f), { force: true });
   await rm(path.join(out, ".well-known"), { recursive: true, force: true });
 }
+
+// The signed updater files in update/ are published by the release flow and are authoritative on the mirror host:
+// the bundle must never carry (and so never overwrite) its own copy of them.
+await rm(path.join(out, "update"), { recursive: true, force: true });
 
 // the Cloudflare-only file becomes a plain-text reference for configuring the new host
 const headers = await readFile(path.join(out, "_headers"), "utf8");
