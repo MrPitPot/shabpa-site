@@ -48,38 +48,61 @@
 
   var body = document.body;
   var clockTime = $("#clockTime");
-  var progress = 0, lastNight = null, lastClock = "";
-  function setVar(k, v) { root.style.setProperty(k, v); }
-
-  function update() {
-    var max = Math.max(1, root.scrollHeight - window.innerHeight);
+  var progress = 0, lastNight = null, lastClock = "", lastP = -1, starsO = 0, cloudsGone = null;
+  var sky = $(".sky"), themeMeta = $('meta[name="theme-color"]');
+  /* دستگاه ضعیف یا حالت صرفه‌جویی داده: افکت‌های سنگین خاموش می‌شن */
+  var conn = navigator.connection || {};
+  var forced = /[?&]lite=([01])/.exec(location.search);
+  var lite = forced ? forced[1] === "1" : (navigator.hardwareConcurrency || 8) <= 4 || (navigator.deviceMemory || 8) <= 4 || conn.saveData === true || /(^|-)2g$|3g/.test(conn.effectiveType || "");
+  if (lite) root.classList.add("lite");
+  /* متغیرهای آسمان فقط روی خود آسمان نوشته می‌شن تا استایل کل صفحه دوباره محاسبه نشه */
+  var skyGrad = $(".sky-grad"), hor = $(".horizon"), sunEl = $(".sun"), moonEl = $(".moon"), cloudsEl = $(".clouds"), starsEl = $("#stars");
+  var lightsEl = null; /* گروه پنجره‌های شهر؛ بعد از ساختنشون پر می‌شه */
+  var target = 1;
+  function measure() {
     var dl = $("#download");
     /* شب کامل وقتی بخش دانلود تقریباً وسط صفحه‌ست */
-    var target = dl ? Math.max(1, dl.offsetTop - window.innerHeight * 0.3) : max;
-    progress = clamp(window.scrollY / target, 0, 1);
-    var p = progress, s = sample(p), vw = window.innerWidth, vh = window.innerHeight;
+    target = dl ? Math.max(1, dl.getBoundingClientRect().top + window.scrollY - window.innerHeight * 0.3) : Math.max(1, root.scrollHeight - window.innerHeight);
+    lastP = -1;
+  }
 
-    setVar("--sky-a", s.c[0]); setVar("--sky-b", s.c[1]); setVar("--sky-c", s.c[2]);
-    setVar("--hill-far", s.hf); setVar("--hill-near", s.hn); setVar("--bld", s.b); setVar("--tower", s.t); setVar("--sun-c", s.sun);
+  function update() {
+    progress = clamp(window.scrollY / target, 0, 1);
+    var p = progress;
+    if (Math.abs(p - lastP) < 0.0004) return;
+    lastP = p;
+    var s = sample(p), vw = window.innerWidth, vh = window.innerHeight;
+
+    skyGrad.style.background = "linear-gradient(180deg," + s.c[0] + " 0%," + s.c[1] + " 55%," + s.c[2] + " 100%)";
+    var hs = hor.style;
+    hs.setProperty("--hill-far", s.hf); hs.setProperty("--hill-near", s.hn); hs.setProperty("--bld", s.b); hs.setProperty("--tower", s.t);
 
     /* خورشید: از بالا به افق می‌ره و غروب می‌کنه */
     var sp = clamp(p / 0.52, 0, 1);
     var sunSize = Math.min(Math.max(vw * 0.12, 90), 170);
-    setVar("--sun-x", Math.round(lerp(vw < 900 ? vw * 0.12 : vw * 0.47, vw * 0.5, sp) - sunSize / 2) + "px");
-    setVar("--sun-y", Math.round(lerp(vh * 0.1, vh * 0.98, smooth(sp))) + "px");
-    setVar("--sun-o", String(1 - smooth((p - 0.46) / 0.1)));
+    var sx = Math.round(lerp(vw < 900 ? vw * 0.12 : vw * 0.47, vw * 0.5, sp) - sunSize / 2), sy = Math.round(lerp(vh * 0.1, vh * 0.98, smooth(sp)));
+    var so2 = 1 - smooth((p - 0.46) / 0.1);
+    sunEl.style.transform = "translate(" + sx + "px," + sy + "px)"; sunEl.style.opacity = String(so2);
+    sunEl.style.visibility = so2 < 0.01 ? "hidden" : "visible"; sunEl.style.setProperty("--sun-c", s.sun);
     /* ماه: از پایین بالا میاد */
-    var mp = clamp((p - 0.5) / 0.32, 0, 1), moonSize = Math.min(Math.max(vw * 0.1, 80), 140);
-    setVar("--moon-x", Math.round(lerp(vw * 0.12, vw * 0.2, mp)) + "px");
-    setVar("--moon-y", Math.round(lerp(vh * 1.05, vh * (vw < 900 ? 0.2 : 0.16), smooth(mp)) - moonSize * 0.0) + "px");
-    setVar("--moon-o", String(smooth((p - 0.5) / 0.1)));
-    setVar("--stars-o", String(smooth((p - 0.5) / 0.25)));
-    setVar("--clouds-o", String(1 - smooth(p / 0.5)));
-    setVar("--win-a", String(smooth((p - 0.55) / 0.2)));
+    var mp = clamp((p - 0.5) / 0.32, 0, 1);
+    var mo = smooth((p - 0.5) / 0.1);
+    moonEl.style.transform = "translate(" + Math.round(lerp(vw * 0.12, vw * 0.2, mp)) + "px," + Math.round(lerp(vh * 1.05, vh * (vw < 900 ? 0.2 : 0.16), smooth(mp))) + "px)";
+    moonEl.style.opacity = String(mo); moonEl.style.visibility = mo < 0.01 ? "hidden" : "visible";
+    starsO = smooth((p - 0.5) / 0.25);
+    starsEl.style.opacity = String(starsO);
+    var co = 1 - smooth(p / 0.5);
+    cloudsEl.style.opacity = String(co);
+    var gone = co < 0.02;
+    if (gone !== cloudsGone) { sky.classList.toggle("no-clouds", gone); cloudsGone = gone; }
+    var wa = smooth((p - 0.55) / 0.2);
+    if (lightsEl) lightsEl.style.opacity = String((wa * 0.9).toFixed(3));
+    hs.setProperty("--win-a", String(wa.toFixed(3)));
+    ensureLoop();
 
     var night = p > 0.4;
     if (night !== lastNight) { body.classList.toggle("night", night); lastNight = night; }
-    document.querySelector('meta[name="theme-color"]').setAttribute("content", s.c[0]);
+    if (themeMeta) themeMeta.setAttribute("content", s.c[0]);
 
     /* ساعت: ۱۲:۰۰ ظهر تا ۰۳:۰۰ بامداد */
     var mins = Math.round(lerp(12 * 60, 27 * 60, p) / 5) * 5, h = Math.floor(mins / 60) % 24, m = mins % 60;
@@ -90,7 +113,9 @@
   var ticking = false;
   function onScroll() { if (!ticking) { ticking = true; requestAnimationFrame(function () { ticking = false; update(); }); } }
   window.addEventListener("scroll", onScroll, { passive: true });
-  window.addEventListener("resize", function () { sizeStars(); update(); });
+  window.addEventListener("resize", function () { sizeStars(); measure(); update(); });
+  window.addEventListener("load", function () { measure(); update(); });
+  if ("ResizeObserver" in window) { var ro = new ResizeObserver(function () { measure(); onScroll(); }); ro.observe(document.body); }
 
   /* ---------- ستاره‌ها ---------- */
   var cv = $("#stars"), ctx = cv.getContext("2d"), stars = [], shoot = null, W = 0, H = 0, lastShoot = 0;
@@ -98,20 +123,20 @@
     var dpr = Math.min(window.devicePixelRatio || 1, 2);
     W = window.innerWidth; H = window.innerHeight;
     cv.width = W * dpr; cv.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    var n = Math.round(clamp(W * H / 7000, 70, 220));
+    var n = lite ? 60 : Math.round(clamp(W * H / 7000, 70, 220));
     stars = [];
     for (var i = 0; i < n; i++) stars.push({ x: Math.random() * W, y: Math.random() * H * 0.78, r: Math.random() * 1.3 + 0.3, ph: Math.random() * 6.28, sp: 0.5 + Math.random() * 1.5 });
   }
   function drawStars(t) {
     ctx.clearRect(0, 0, W, H);
-    var so = parseFloat(getComputedStyle(root).getPropertyValue("--stars-o")) || 0;
+    var so = starsO;
     if (so < 0.02) return;
     for (var i = 0; i < stars.length; i++) {
       var s = stars[i], a = reduce ? 0.8 : 0.45 + 0.55 * Math.abs(Math.sin(t / 1000 * s.sp + s.ph));
       ctx.globalAlpha = a; ctx.fillStyle = "#fff";
       ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, 6.283); ctx.fill();
     }
-    if (!reduce) {
+    if (!reduce && !lite) {
       if (!shoot && so > 0.8 && t - lastShoot > 5500 && Math.random() < 0.01) {
         shoot = { x: Math.random() * W * 0.7 + W * 0.2, y: Math.random() * H * 0.3, vx: -6 - Math.random() * 3, vy: 3 + Math.random() * 2, life: 1 };
         lastShoot = t;
@@ -127,15 +152,20 @@
     }
     ctx.globalAlpha = 1;
   }
-  var raf = 0;
-  function loop(t) { drawStars(t); raf = requestAnimationFrame(loop); }
-  document.addEventListener("visibilitychange", function () {
-    if (document.hidden) cancelAnimationFrame(raf); else raf = requestAnimationFrame(loop);
-  });
+  var raf = 0, lastDraw = 0, FRAME = lite ? 66 : 33;
+  function loop(t) {
+    raf = 0;
+    if (document.hidden || starsO < 0.02) { ctx.clearRect(0, 0, W, H); return; }
+    if (t - lastDraw >= FRAME) { lastDraw = t; drawStars(t); }
+    raf = requestAnimationFrame(loop);
+  }
+  function ensureLoop() { if (!raf && !document.hidden && starsO >= 0.02) raf = requestAnimationFrame(loop); }
+  document.addEventListener("visibilitychange", function () { if (!document.hidden) ensureLoop(); });
 
   /* ---------- پنجره‌های شهر ---------- */
   (function windows() {
     var g = $("#city"), ns = "http://www.w3.org/2000/svg", seed = 7;
+    var lg = document.createElementNS(ns, "g"); lg.setAttribute("class", "lights"); g.appendChild(lg); lightsEl = lg;
     function rnd() { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; }
     var cols = [[40, 34, 62], [130, 30, 88], [214, 46, 56], [300, 26, 104], [390, 38, 70], [470, 34, 92], [560, 48, 58], [650, 28, 110],
       [1200, 30, 96], [1290, 46, 62], [1380, 26, 108], [1460, 38, 74], [1530, 50, 60]];
@@ -145,7 +175,7 @@
           if (rnd() < 0.45) {
             var r = document.createElementNS(ns, "rect");
             r.setAttribute("x", x); r.setAttribute("y", y); r.setAttribute("width", 4); r.setAttribute("height", 6);
-            r.setAttribute("class", "win-l"); g.appendChild(r);
+            r.setAttribute("class", "win-l"); lg.appendChild(r);
           }
         }
       }
@@ -182,7 +212,7 @@
   railLinks.forEach(function (r) { active.observe(r.el); });
 
   /* ---------- کج‌شدن اسکرین‌شات با ماوس ---------- */
-  if (!reduce && window.matchMedia("(hover:hover)").matches) {
+  if (!reduce && !lite && window.matchMedia("(hover:hover)").matches) {
     $$("[data-tilt]").forEach(function (el) {
       el.addEventListener("pointermove", function (e) {
         var b = el.getBoundingClientRect(), x = (e.clientX - b.left) / b.width - 0.5, y = (e.clientY - b.top) / b.height - 0.5;
@@ -203,37 +233,34 @@
   $("#lbClose").addEventListener("click", function () { lb.close(); });
   lb.addEventListener("click", function (e) { if (e.target === lb) lb.close(); });
 
-  /* ---------- آخرین نسخه از GitHub ---------- */
-  var REPO = "MrPitPot/shabpa";
-  var OK_URL = new RegExp("^https://github\\.com/" + REPO + "/releases/download/[A-Za-z0-9._-]+/[A-Za-z0-9._-]+$");
+  /* ---------- آخرین نسخه (از خود سایت؛ سرور اطلاعات و فایل رو از GitHub می‌گیره و کش می‌کنه) ---------- */
+  var OK_URL = /^https:\/\/github\.com\/MrPitPot\/shabpa\/releases\/download\/v\d+\.\d+\.\d+\/ShabpaSetup\.exe$/;
   function applyRelease(d) {
-    if (!d || typeof d.tag_name !== "string" || !/^v?\d+\.\d+\.\d+$/.test(d.tag_name)) return;
-    var asset = (d.assets || []).filter(function (a) { return a && a.name === "ShabpaSetup.exe" && OK_URL.test(a.browser_download_url); })[0];
-    if (!asset) return;
-    var ver = d.tag_name.replace(/^v/, "");
-    ["#heroDl", "#dlBtn"].forEach(function (s) { $(s).href = asset.browser_download_url; });
-    $("#heroVer").textContent = "v" + ver; $("#dlVer").textContent = "v" + ver;
-    $("#dlFile").textContent = asset.name;
-    $("#dlSize").textContent = fa((asset.size / 1048576).toFixed(1)) + T.mb;
-    var dt = new Date(d.published_at);
+    if (!d || typeof d.version !== "string" || !/^\d+\.\d+\.\d+$/.test(d.version) || d.url !== "/download/ShabpaSetup.exe") return;
+    ["#heroDl", "#dlBtn"].forEach(function (s) { $(s).href = d.url; });
+    $("#heroVer").textContent = "v" + d.version; $("#dlVer").textContent = "v" + d.version;
+    $("#dlFile").textContent = d.file;
+    $("#dlSize").textContent = fa((d.size / 1048576).toFixed(1)) + T.mb;
+    var dt = new Date(d.published);
     if (!isNaN(dt)) $("#dlDate").textContent = new Intl.DateTimeFormat(T.locale, { dateStyle: "long" }).format(dt);
     $("#dlMeta").hidden = false;
-    var m = /^sha256:([0-9a-f]{64})$/i.exec(asset.digest || "");
-    if (m) { $("#shaVal").textContent = m[1].toLowerCase(); $("#shaBox").hidden = false; }
+    if (/^[0-9a-f]{64}$/.test(d.sha256)) { $("#shaVal").textContent = d.sha256; $("#shaBox").hidden = false; }
+    var alt = $("#dlAlt");
+    if (alt && typeof d.github === "string" && OK_URL.test(d.github)) alt.href = d.github;
   }
   (function fetchRelease() {
     var cached = null;
-    try { cached = JSON.parse(sessionStorage.getItem("shabpa-rel") || "null"); } catch (e) { /* ignore */ }
-    if (cached && Date.now() - cached.t < 1800000) { applyRelease(cached.d); return; }
+    try { cached = JSON.parse(sessionStorage.getItem("shabpa-rel2") || "null"); } catch (e) { /* ignore */ }
+    if (cached && Date.now() - cached.t < 600000) { applyRelease(cached.d); return; }
     var ctl = "AbortController" in window ? new AbortController() : null;
-    var to = setTimeout(function () { if (ctl) ctl.abort(); }, 8000);
-    fetch("https://api.github.com/repos/" + REPO + "/releases/latest", { headers: { Accept: "application/vnd.github+json" }, signal: ctl ? ctl.signal : undefined, referrerPolicy: "no-referrer" })
+    var to = setTimeout(function () { if (ctl) ctl.abort(); }, 10000);
+    fetch("/api/latest", { signal: ctl ? ctl.signal : undefined, credentials: "omit" })
       .then(function (r) { if (!r.ok) throw 0; return r.json(); })
       .then(function (d) {
         clearTimeout(to); applyRelease(d);
-        try { sessionStorage.setItem("shabpa-rel", JSON.stringify({ t: Date.now(), d: { tag_name: d.tag_name, published_at: d.published_at, assets: (d.assets || []).map(function (a) { return { name: a.name, size: a.size, digest: a.digest, browser_download_url: a.browser_download_url }; }) } })); } catch (e) { /* ignore */ }
+        try { sessionStorage.setItem("shabpa-rel2", JSON.stringify({ t: Date.now(), d: d })); } catch (e) { /* ignore */ }
       })
-      .catch(function () { /* لینک ثابت «آخرین نسخه» می‌مونه */ });
+      .catch(function () { /* لینک ثابت «آخرین نسخه» توی GitHub می‌مونه */ });
   })();
 
   $("#shaCopy").addEventListener("click", function () {
@@ -332,6 +359,5 @@
     bar.appendChild(a); bar.appendChild(x); document.body.appendChild(bar);
   })();
 
-  sizeStars(); update();
-  raf = requestAnimationFrame(loop);
+  sizeStars(); measure(); update();
 })();
