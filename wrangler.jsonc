@@ -5,6 +5,10 @@
   "observability": {
     "enabled": true
   },
+  "routes": [
+    { "pattern": "shabpa.ir", "custom_domain": true },
+    { "pattern": "www.shabpa.ir", "custom_domain": true }
+  ],
   "assets": {
     "directory": "public"
   }
