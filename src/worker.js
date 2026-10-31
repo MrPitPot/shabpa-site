@@ -1,6 +1,8 @@
 // Shabpa site worker.
 //  - forces https and the bare domain
 //  - GET /api/latest              latest release info (from GitHub, cached at the edge)
+//  - GET /api/stats               total installer downloads: GitHub (all releases, which also covers winget, because the
+//                                 winget manifest points at the GitHub asset) plus the downloads served from this site
 //  - GET /download/ShabpaSetup.exe  the installer, served from our own domain so visitors whose
 //                                   network is slow or blocked towards GitHub can still get it.
 //    The file is fetched from the official GitHub release, its SHA-256 is checked against the
@@ -13,6 +15,9 @@ const REPO = "MrPitPot/shabpa";
 const FILE = "ShabpaSetup.exe";
 const RELEASE_API = `https://api.github.com/repos/${REPO}/releases/latest`;
 const ASSET_URL = new RegExp(`^https://github\\.com/${REPO}/releases/download/v\\d+\\.\\d+\\.\\d+/${FILE.replace(".", "\\.")}$`);
+
+const BOT_UA = /bot|crawl|spider|slurp|preview|headless|curl|wget|python|monitor|uptime|check/i;
+const RELEASES_API = `https://api.github.com/repos/${REPO}/releases?per_page=100`;
 
 const SECURITY_HEADERS = {
   "X-Content-Type-Options": "nosniff",
@@ -66,6 +71,59 @@ async function latestInfo(ctx) {
   }
 }
 
+/* Counters live in D1 (binding DB, table counters). Without the binding everything below quietly does nothing. */
+async function bump(env, key) {
+  if (!env.DB) return;
+  try { await env.DB.prepare("INSERT INTO counters (k, n) VALUES (?1, 1) ON CONFLICT(k) DO UPDATE SET n = n + 1").bind(key).run(); } catch (e) { /* counting must never break a download */ }
+}
+
+async function readCounters(env) {
+  const out = { site: 0, fills: 0, enabled: !!env.DB };
+  if (!env.DB) return out;
+  try {
+    const { results } = await env.DB.prepare("SELECT k, n FROM counters WHERE k IN ('site_downloads', 'proxy_fills')").all();
+    for (const r of results || []) { if (r.k === "site_downloads") out.site = r.n | 0; else out.fills = r.n | 0; }
+  } catch (e) { out.enabled = false; }
+  return out;
+}
+
+/** Sum of download_count over every release's installer asset. Cached 10 minutes, with a day-long stale copy. */
+async function githubDownloads(ctx) {
+  const cache = caches.default;
+  const fresh = new Request("https://shabpa.ir/__cache/gh-downloads");
+  const stale = new Request("https://shabpa.ir/__cache/gh-downloads-stale");
+  const hit = await cache.match(fresh);
+  if (hit) return (await hit.json()).n;
+  try {
+    let n = 0;
+    for (let page = 1; page <= 5; page++) {
+      const r = await fetch(`${RELEASES_API}&page=${page}`, { headers: { Accept: "application/vnd.github+json", "User-Agent": "shabpa-site" } });
+      if (!r.ok) throw new Error("github " + r.status);
+      const list = await r.json();
+      if (!Array.isArray(list)) throw new Error("unexpected shape");
+      for (const rel of list) for (const a of rel.assets || []) if (a && a.name === FILE && Number.isFinite(a.download_count)) n += a.download_count;
+      if (list.length < 100) break;
+    }
+    const body = JSON.stringify({ n });
+    ctx.waitUntil(Promise.all([
+      cache.put(fresh, new Response(body, { headers: { "Cache-Control": "max-age=600" } })),
+      cache.put(stale, new Response(body, { headers: { "Cache-Control": "max-age=86400" } })),
+    ]));
+    return n;
+  } catch (e) {
+    const old = await cache.match(stale);
+    if (old) return (await old.json()).n;
+    return null;
+  }
+}
+
+async function stats(ctx, env) {
+  const [github, c] = await Promise.all([githubDownloads(ctx), readCounters(env)]);
+  /* The site copies the installer from GitHub only when its own cache is empty; that one GitHub download is not a visitor, so it is taken off. */
+  const total = github === null ? null : Math.max(0, github + c.site - c.fills);
+  return { github, site: c.enabled ? c.site : null, total, updated: new Date().toISOString() };
+}
+
 function parseRange(header, size) {
   const m = /^bytes=(\d*)-(\d*)$/.exec(header || "");
   if (!m || (m[1] === "" && m[2] === "")) return null;
@@ -75,7 +133,7 @@ function parseRange(header, size) {
   return start <= end && start < size ? { start, end } : "bad";
 }
 
-async function installer(request, ctx, info) {
+async function installer(request, ctx, env, info) {
   const cache = caches.default;
   const key = new Request(`https://shabpa.ir/__cache/installer/${info.sha256}`);
   const base = {
@@ -99,6 +157,7 @@ async function installer(request, ctx, info) {
   else {
     const up = await fetch(info.github, { redirect: "follow", headers: { "User-Agent": "shabpa-site" } });
     if (!up.ok) return Response.redirect(info.github, 302);
+    ctx.waitUntil(bump(env, "proxy_fills"));
     buf = await up.arrayBuffer();
     if (hex(await crypto.subtle.digest("SHA-256", buf)) !== info.sha256 || buf.byteLength !== info.size) return Response.redirect(info.github, 302);
     ctx.waitUntil(cache.put(key, new Response(buf, { headers: { "Cache-Control": "max-age=86400" } })));
@@ -122,14 +181,22 @@ export default {
     }
     const country = (request.cf && request.cf.country) || "??";
 
+    if (url.pathname === "/api/stats") {
+      if (request.method !== "GET" && request.method !== "HEAD") return new Response("Method not allowed", { status: 405, headers: { Allow: "GET, HEAD" } });
+      try { return json(await stats(ctx, env), 200, "public, max-age=300"); } catch (e) { return json({ error: "unavailable" }, 502, "no-store"); }
+    }
+
     if (url.pathname === "/api/latest" || url.pathname === `/download/${FILE}`) {
       if (request.method !== "GET" && request.method !== "HEAD") return new Response("Method not allowed", { status: 405, headers: { Allow: "GET, HEAD" } });
       try {
         const info = await latestInfo(ctx);
         if (url.pathname === "/api/latest") return json(info, 200, "public, max-age=300");
         const range = request.headers.get("Range");
-        if (request.method === "GET" && (!range || /^bytes=0-/.test(range))) console.log(JSON.stringify({ evt: "download", v: info.version, c: country }));
-        return await installer(request, ctx, info);
+        if (request.method === "GET" && (!range || /^bytes=0-/.test(range))) {
+          console.log(JSON.stringify({ evt: "download", v: info.version, c: country }));
+          if (!BOT_UA.test(request.headers.get("User-Agent") || "")) ctx.waitUntil(bump(env, "site_downloads"));
+        }
+        return await installer(request, ctx, env, info);
       } catch (e) {
         if (url.pathname === "/api/latest") return json({ error: "unavailable" }, 502, "no-store");
         return Response.redirect(`https://github.com/${REPO}/releases/latest`, 302);

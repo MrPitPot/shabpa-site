@@ -11,6 +11,9 @@
     { "pattern": "shabpa.ir", "custom_domain": true },
     { "pattern": "www.shabpa.ir", "custom_domain": true }
   ],
+  "d1_databases": [
+    { "binding": "DB", "database_name": "shabpa-stats", "database_id": "7ab381ba-5119-4a98-a3d2-8dcd3b076e68", "migrations_dir": "migrations" }
+  ],
   "assets": {
     "directory": "public",
     "binding": "ASSETS",

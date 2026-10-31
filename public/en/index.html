@@ -3,8 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Shabpa | A night watch for your Windows PC</title>
-<meta name="description" content="Shabpa is a light Windows app for scheduled shutdown and sleep, a game overlay, per-app network limits, tasks and focus, backups and system health. Free and open source, in Persian and English.">
+<title>Shabpa | Auto Shutdown, Game Overlay and Ping Control for Windows</title>
+<meta name="description" content="Free, open-source Windows app: auto shutdown timer, FPS game overlay, per-app network limits for steady ping, game tuning, backups and system health.">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+<meta name="author" content="Mr.PitPot">
 <meta name="theme-color" content="#04061a">
 <meta name="color-scheme" content="dark light">
 <link rel="canonical" href="https://shabpa.ir/en/">
@@ -18,13 +20,189 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:locale:alternate" content="fa_IR">
 <meta property="og:site_name" content="Shabpa">
-<meta property="og:title" content="Shabpa | A night watch for your Windows PC">
-<meta property="og:description" content="Scheduled shutdown, game overlay, network tools, tasks, backups and system health in one light app. Free and open source.">
+<meta property="og:title" content="Shabpa | Auto Shutdown, Game Overlay and Ping Control for Windows">
+<meta property="og:description" content="Scheduled shutdown, game overlay, per-app network limits, game tuning, a command box, backups and system health in one light app. Free and open source.">
 <meta property="og:url" content="https://shabpa.ir/en/">
 <meta property="og:image" content="https://shabpa.ir/assets/img/og.png">
+<meta property="og:image:alt" content="Shabpa, the night watch for your Windows PC">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="stylesheet" href="/assets/style.css?v=20261022e">
-<script src="/assets/main.js?v=20261022e" defer></script>
+<meta name="twitter:title" content="Shabpa | Auto Shutdown, Game Overlay and Ping Control for Windows">
+<meta name="twitter:description" content="A free, open-source Windows app: scheduled shutdown, game overlay, network limits and system health.">
+<meta name="twitter:image" content="https://shabpa.ir/assets/img/og.png">
+<script type="application/ld+json">{
+ "@context": "https://schema.org",
+ "@graph": [
+  {
+   "@type": "WebSite",
+   "@id": "https://shabpa.ir/#site",
+   "url": "https://shabpa.ir/en/",
+   "name": "Shabpa",
+   "alternateName": [
+    "شب‌پا",
+    "شب پا"
+   ],
+   "inLanguage": [
+    "en",
+    "fa"
+   ]
+  },
+  {
+   "@type": "SoftwareApplication",
+   "@id": "https://shabpa.ir/en/#app",
+   "name": "Shabpa",
+   "alternateName": [
+    "Shabpa",
+    "شب‌پا",
+    "شب پا",
+    "شبپا"
+   ],
+   "description": "A free, open-source Windows app: auto shutdown and sleep timer, game overlay, per-app network limits, game tuning, tasks and focus, backups and system health.",
+   "applicationCategory": "UtilitiesApplication",
+   "operatingSystem": "Windows 10, Windows 11",
+   "inLanguage": [
+    "en",
+    "fa"
+   ],
+   "url": "https://shabpa.ir/en/",
+   "downloadUrl": "https://shabpa.ir/download/ShabpaSetup.exe",
+   "installUrl": "https://shabpa.ir/en/#download",
+   "image": "https://shabpa.ir/assets/img/og.png",
+   "screenshot": [
+    "https://shabpa.ir/assets/img/en/home.webp",
+    "https://shabpa.ir/assets/img/en/overlay.webp",
+    "https://shabpa.ir/assets/img/en/ping.webp"
+   ],
+   "license": "https://opensource.org/licenses/MIT",
+   "isAccessibleForFree": true,
+   "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+   },
+   "author": {
+    "@type": "Person",
+    "name": "Mr.PitPot",
+    "url": "https://github.com/MrPitPot"
+   },
+   "codeRepository": "https://github.com/MrPitPot/shabpa",
+   "featureList": [
+    "Scheduled shutdown, sleep, hibernate and restart with a cancellable countdown",
+    "Game overlay with FPS, temperatures, RAM and ping that injects nothing into the game",
+    "Per-app internet speed caps and in-game protection",
+    "Game tuning with ten Windows settings and full undo",
+    "Offline command box in English and Persian",
+    "Tasks, focus timer and profiles",
+    "Backups, disk analysis and system health",
+    "Night light, screen dimming and weather",
+    "Remote control through a Telegram bot"
+   ]
+  },
+  {
+   "@type": "FAQPage",
+   "inLanguage": "en",
+   "mainEntity": [
+    {
+     "@type": "Question",
+     "name": "How do I shut down my PC automatically at a set time?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Open \"System control\" in Shabpa, pick \"Shut down\" and set a time or a repeating schedule (say, every night at 1:30). Or press Ctrl+Alt+Space and type \"shut down at 1 am\". A countdown is always shown first, and you can cancel it at any moment."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Does Shabpa lower my ping in games?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Shabpa does not change your route to the game server. What it does is automatically cap the upload and download of other apps (updates, torrents, browsers...) while you play, so your line is not saturated and the ping stays flat. When the game closes everything is released. Live ping and a stability chart help you see where the problem is."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Is the FPS overlay safe in online games?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "The overlay injects nothing into the game; it is only drawn on screen, so it does not interfere with anti-cheat. Still, we cannot guarantee it for every specific anti-cheat, so if your game is very strict, check its own rules too."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Is game tuning safe?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Yes. It only changes ten documented Windows settings, asks first, keeps your previous value and puts exactly that back when you switch it off. No program, service or file is deleted or disabled."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Does the Bidar assistant need the internet or AI?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "No. Commands are understood on your own PC with no language model, and no text is sent anywhere. Anything that has an effect first shows a card with the exact time and does not run without your confirmation."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "What is Shabpa (شب‌پا)?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Shabpa is a free, open-source Windows 10 and 11 app, in Persian and English, that brings an automatic shutdown timer, an FPS game overlay, per-app internet control, game tuning, app and driver updates, backups and a system health check into one light app. It has no account and collects no data from your PC."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Windows or my browser shows a warning. Is it dangerous?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "The installer is not code-signed yet, so SmartScreen may warn you. Getting a free signing certificate is in progress; Shabpa is still new and needs more visibility before it can be approved. Click \"More info\", then \"Run anyway\", and ideally compare the file's SHA-256 with the value on this page. All the code is readable on GitHub."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Why do some antivirus programs flag it?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "For per-app speed limits, Shabpa uses the open-source WinDivert driver, which some antivirus products flag because it is a network tool. If you don't need that feature, you don't have to use it."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Is my data sent anywhere?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Not by the app. Everything stays on your PC. The internet is only used when you switch something on (updates, weather, the Telegram bot, support tickets)."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "How do updates work?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "The app fetches the new version from GitHub and only runs it if the file's SHA-256 matches the published value."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "How do I uninstall it?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Like any other app, from Windows \"Apps\" or \"Installed apps\". App data stays in %AppData%\\Shabpa, and you can delete it by hand if you want."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "I found a bug or have an idea",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Open a ticket from the app's Support page or write on GitHub. Please report security issues privately: Report a vulnerability."
+     }
+    }
+   ]
+  }
+ ]
+}</script>
+<link rel="stylesheet" href="/assets/style.css?v=20261031">
+<script src="/assets/main.js?v=20261031" defer></script>
 </head>
 <body>
 <a class="skip" href="#download">Skip to download</a>
@@ -63,6 +241,7 @@
   <nav aria-label="Main menu">
     <a href="#features">Features</a>
     <a href="#themes">Look</a>
+    <a href="#guides">Guides</a>
     <a href="#trust">Privacy</a>
     <a href="#faq">FAQ</a>
   </nav>
@@ -78,7 +257,7 @@
   <div class="hero-in">
     <p class="eyebrow reveal">Free · Open source · Windows 10 &amp; 11</p>
     <h1 class="reveal">Shabpa,<br><span class="grad">the night watch for your PC</span></h1>
-    <p class="lead reveal">Shut your PC down on time, game without ping spikes, keep your tasks in order and know how your system is doing. All in one light app, in Persian and English.</p>
+    <p class="lead reveal">Shut your PC down automatically on time, game without ping spikes, tune Windows for gaming and know how your system is doing. All in one light app, in Persian and English.</p>
     <div class="cta reveal">
       <a class="btn" id="heroDl" href="https://github.com/MrPitPot/shabpa/releases/latest" rel="noopener">
         <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M12 3v12m0 0l-5-5m5 5l5-5M5 20h14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -95,10 +274,11 @@
 </section>
 
 <section class="stats" aria-label="Shabpa at a glance">
-  <div class="stat reveal"><b data-count="21">21</b><span>color themes</span></div>
+  <div class="stat reveal"><b data-count="22">22</b><span>color themes</span></div>
   <div class="stat reveal"><b data-count="2">2</b><span>languages: Persian &amp; English</span></div>
-  <div class="stat reveal"><b data-count="10">10</b><span>feature areas in one app</span></div>
+  <div class="stat reveal"><b data-count="12">12</b><span>feature areas in one app</span></div>
   <div class="stat reveal"><b>MIT</b><span>open source &amp; free</span></div>
+  <div class="stat reveal" id="statDl" hidden title="Total installer downloads from GitHub, winget and this site"><b data-count="0" data-fmt>0</b><span>downloads</span></div>
 </section>
 
 <div id="features">
@@ -112,7 +292,7 @@
       <li>When a download finishes, the PC goes idle or a program closes</li>
       <li>Wake timers and repeating schedules (say, every night at 1:30)</li>
       <li>Sleep and wake history</li>
-      <li>A command that arrives late (the PC was off) is dropped, never run by surprise</li>
+      <li>A late command never runs: if the PC was off or asleep at the scheduled time, it does not shut down by surprise hours later</li>
     </ul>
   </div>
   <figure class="shot" data-tilt><div class="win win-app"><img loading="lazy" decoding="async" src="/assets/img/en/power.webp" width="1280" height="800" alt="System control: shut down, sleep, hibernate and restart with a countdown"></div></figure>
@@ -154,7 +334,9 @@
     <ul class="opts">
       <li>Checks for disk, Windows updates and services</li>
       <li>Firewall, Defender and UAC status</li>
-      <li>Startup-program watch and program and driver update checks</li>
+      <li>See the hidden Windows errors: the things logged behind the scenes that Windows never shows you, with a plain explanation of what they mean and what to do</li>
+      <li>Startup-program watch</li>
+      <li>App updates through winget, your graphics driver version and Windows Update's driver suggestions; nothing is installed without your approval</li>
       <li>A redacted report with no personal data, ready to send</li>
     </ul>
   </div>
@@ -179,11 +361,11 @@
   <div class="card text">
     <span class="kick">06 · Game overlay</span>
     <h2>System info over your game, your way</h2>
-    <p>FPS, 1% low, GPU and CPU temperature, RAM and ping, in six layouts with your own colors and size.</p>
+    <p>FPS, 1% low, GPU and CPU temperature, RAM, ping and a clock (even with seconds), in six layouts, with size from 25 to 200%, background opacity from 0 to 100% and a separate color for each part.</p>
     <ul class="opts">
       <li>A separate profile per game and a report after each session</li>
-      <li>Drag the overlay anywhere with the mouse</li>
-      <li>Nothing is injected into games, so anti-cheat stays happy</li>
+      <li>Drag the overlay anywhere with the mouse, and hide the small part names if you prefer</li>
+      <li>Nothing is injected into games, it is only drawn on screen, so it does not interfere with anti-cheat</li>
     </ul>
   </div>
   <figure class="shot" data-tilt><div class="win win-app"><img loading="lazy" decoding="async" src="/assets/img/en/overlay.webp" width="1280" height="800" alt="Game overlay settings"></div></figure>
@@ -198,19 +380,34 @@
       <li>Live ping and a stability chart</li>
       <li>Per-app traffic, speed caps or blocking</li>
       <li>Usage history and a monthly allowance</li>
-      <li>Quick DNS switcher</li>
+      <li>Quick DNS switcher with 11 more servers and a ping test; behind a VPN, where every DNS looks falsely fast, Shabpa notices and tells you</li>
+      <li>Per-app speed caps in megabits or megabytes, whichever you think in</li>
     </ul>
   </div>
   <figure class="shot" data-tilt><div class="win win-app"><img loading="lazy" decoding="async" src="/assets/img/en/ping.webp" width="1280" height="800" alt="Ping stability and in-game protection"></div></figure>
 </article>
 
-<article class="chap flip" data-title="Comfort &amp; rest">
+<article class="chap flip" data-title="Game tuning">
   <div class="card text">
-    <span class="kick">08 · Comfort &amp; rest</span>
-    <h2>Go easy on your eyes at night</h2>
-    <p>Dim the screen even below your monitor's own minimum, use a warm tint at night and get break reminders.</p>
+    <span class="kick">08 · Game tuning</span>
+    <h2>Tune Windows for gaming, fully reversible</h2>
+    <p>Ten well-known Windows settings in three tabs (processor &amp; memory, Windows &amp; system, graphics). Each has an "i" that explains in plain words what it does when you hover it.</p>
     <ul class="opts">
-      <li>Night light with adjustable color temperature</li>
+      <li>Game processor priority, Windows Game Mode, stop Game Bar's hidden recording, hardware-accelerated GPU scheduling and a boost for windowed and borderless games</li>
+      <li>It asks before every change and keeps your own value; switching off puts back exactly that, and "put everything back" undoes all of it at once</li>
+      <li>No program, service or file is deleted or disabled</li>
+    </ul>
+  </div>
+  <figure class="shot" data-tilt><div class="win win-app"><img loading="lazy" decoding="async" src="/assets/img/en/tuning.webp" width="1280" height="800" alt="Game tuning: ten Windows settings with explanations and full undo"></div></figure>
+</article>
+
+<article class="chap" data-title="Comfort &amp; rest">
+  <div class="card text">
+    <span class="kick">09 · Comfort &amp; rest</span>
+    <h2>Go easy on your eyes at night</h2>
+    <p>Dim the screen below your monitor's own minimum, something neither Windows settings nor the monitor's buttons can do. A warm night tint and break reminders come with it.</p>
+    <ul class="opts">
+      <li>Night light with adjustable color temperature; the warm tint works like Windows' own Night Light and never turns the picture yellow-grey</li>
       <li>Auto-dim during your night hours</li>
       <li>Keyboard shortcuts to toggle and to dim or brighten</li>
       <li>Sleep mode and a microphone level test</li>
@@ -219,9 +416,24 @@
   <figure class="shot" data-tilt><div class="win win-app"><img loading="lazy" decoding="async" src="/assets/img/en/comfort.webp" width="1280" height="800" alt="Screen dimming and warm tint"></div></figure>
 </article>
 
+<article class="chap flip" data-title="Command box">
+  <div class="card text">
+    <span class="kick">10 · Bidar, the assistant</span>
+    <h2>Type what you want, Bidar the owl does it</h2>
+    <p>A command box that opens with Ctrl+Alt+Space or from the tray menu. Type in English or Persian: "shut down in an hour and a quarter", "open DNS", "CPU temperature?". It works fully offline, and your text never leaves the PC.</p>
+    <ul class="opts">
+      <li>Shutdown, sleep, lock, reminders, focus timer, night light and conditions like "when the download finishes"</li>
+      <li>Every command shows a card with the exact time first; if it is unclear (2 am or 2 pm?) it asks and runs nothing</li>
+      <li>Opens pages, sets the overlay and theme, frees memory, and answers questions like the time, ping and system status</li>
+      <li>Home greets you with about 150 new lines that depend on the hour, season, special days and the game you play</li>
+    </ul>
+  </div>
+  <figure class="shot" data-tilt><div class="win win-app"><img loading="lazy" decoding="async" src="/assets/img/en/assistant.webp" width="1280" height="800" alt="Shabpa command box and Bidar the owl"></div></figure>
+</article>
+
 <article class="chap" data-title="Weather">
   <div class="card text">
-    <span class="kick">09 · Weather</span>
+    <span class="kick">11 · Weather</span>
     <h2>Watch your own sky too</h2>
     <p>Search your city for the current weather, an hourly forecast and 8 days ahead, under an animated sky that changes between day and night.</p>
   </div>
@@ -230,7 +442,7 @@
 
 <article class="chap flip" data-title="Remote control">
   <div class="card text">
-    <span class="kick">10 · Remote control</span>
+    <span class="kick">12 · Remote control</span>
     <h2>Manage your PC from Telegram</h2>
     <p>Optional, and linked with a one-time code. The app never sees the bot's token, and only a fixed list of commands can run.</p>
     <ul class="opts">
@@ -256,7 +468,7 @@
 <section class="try" id="try" data-title="Try it">
   <div class="card text try-card">
     <div>
-      <span class="kick">11 · Try it</span>
+      <span class="kick">13 · Try it</span>
       <h2>Simulate a shutdown right here</h2>
       <p>This is only a demo and never touches your PC. In the real app, every shutdown also shows a countdown first, and you can cancel it at any moment.</p>
     </div>
@@ -278,9 +490,9 @@
 
 <section class="themes" id="themes" data-title="Look">
   <div class="card text wide">
-    <span class="kick">12 · Look</span>
-    <h2>21 color themes, Persian and English, light and dark</h2>
-    <p>Make Shabpa yours: from forest green to neon, from midnight dark to daylight bright. The interface comes in both Persian and English, and you can switch with one click.</p>
+    <span class="kick">14 · Look</span>
+    <h2>22 color themes, Persian and English, light and dark</h2>
+    <p>Make Shabpa yours: from forest green to neon, from midnight dark to daylight bright, plus a seasonal Halloween theme. The interface comes in both Persian and English, and you can switch with one click.</p>
   </div>
   <div class="themes-row">
     <figure class="shot" data-tilt><div class="win win-app"><img loading="lazy" decoding="async" src="/assets/img/en/theme-sunset.webp" width="1280" height="800" alt="Sunset theme with warm colors"></div><figcaption>Sunset</figcaption></figure>
@@ -291,7 +503,7 @@
 
 <section class="trust" id="trust" data-title="Privacy">
   <div class="card text wide">
-    <span class="kick">13 · Privacy</span>
+    <span class="kick">15 · Privacy</span>
     <h2>Whatever it is, it stays on your PC</h2>
     <div class="trust-grid">
       <div><b>Your data stays yours</b><span>Everything is stored in your own AppData folder, and the app reports nothing anywhere. Only this website collects anonymous, cookie-free visit counts.</span></div>
@@ -301,6 +513,15 @@
     </div>
   </div>
 </section>
+
+<!--guides-->
+<section class="guides" id="guides" data-title="Shabpa guides">
+  <div class="card text wide">
+    <h2>Shabpa guides</h2>
+    <div class="guide-grid"><a class="guide" href="/en/shutdown-timer/"><b>Shutdown timer</b><span>Shut your PC down automatically, on time and without surprises</span></a><a class="guide" href="/en/game-overlay/"><b>Game overlay</b><span>FPS, temperatures and ping over your game, your way</span></a><a class="guide" href="/en/lower-ping/"><b>Network and ping</b><span>See what eats your internet, and stop it</span></a><a class="guide" href="/en/game-tuning/"><b>Game tuning</b><span>Tune Windows for gaming, fully reversible</span></a><a class="guide" href="/en/updates/"><b>Updates</b><span>Update your apps, graphics driver and Windows in one place</span></a><a class="guide" href="/en/night-light/"><b>Night light</b><span>Go easy on your eyes at night, dimmer than your monitor allows</span></a><a class="guide" href="/en/backup-cleanup/"><b>Backup and clean-up</b><span>Folders safe, disk light</span></a><a class="guide" href="/en/health-check/"><b>System health</b><span>Your system&#x27;s health, in plain language</span></a></div>
+  </div>
+</section>
+<!--/guides-->
 
 <section class="download" id="download" data-title="Download">
   <div class="dl-card">
@@ -332,6 +553,18 @@
 <section class="faq" id="faq" data-title="FAQ">
   <div class="card text wide">
     <h2>Frequently asked questions</h2>
+    <details><summary>How do I shut down my PC automatically at a set time?</summary>
+      <p>Open "System control" in Shabpa, pick "Shut down" and set a time or a repeating schedule (say, every night at 1:30). Or press Ctrl+Alt+Space and type "shut down at 1 am". A countdown is always shown first, and you can cancel it at any moment.</p></details>
+    <details><summary>Does Shabpa lower my ping in games?</summary>
+      <p>Shabpa does not change your route to the game server. What it does is automatically cap the upload and download of other apps (updates, torrents, browsers...) while you play, so your line is not saturated and the ping stays flat. When the game closes everything is released. Live ping and a stability chart help you see where the problem is.</p></details>
+    <details><summary>Is the FPS overlay safe in online games?</summary>
+      <p>The overlay injects nothing into the game; it is only drawn on screen, so it does not interfere with anti-cheat. Still, we cannot guarantee it for every specific anti-cheat, so if your game is very strict, check its own rules too.</p></details>
+    <details><summary>Is game tuning safe?</summary>
+      <p>Yes. It only changes ten documented Windows settings, asks first, keeps your previous value and puts exactly that back when you switch it off. No program, service or file is deleted or disabled.</p></details>
+    <details><summary>Does the Bidar assistant need the internet or AI?</summary>
+      <p>No. Commands are understood on your own PC with no language model, and no text is sent anywhere. Anything that has an effect first shows a card with the exact time and does not run without your confirmation.</p></details>
+    <details><summary>What is Shabpa (شب‌پا)?</summary>
+      <p>Shabpa is a free, open-source Windows 10 and 11 app, in Persian and English, that brings an automatic shutdown timer, an FPS game overlay, per-app internet control, game tuning, app and driver updates, backups and a system health check into one light app. It has no account and collects no data from your PC.</p></details>
     <details><summary>Windows or my browser shows a warning. Is it dangerous?</summary>
       <p>The installer is not code-signed yet, so SmartScreen may warn you. Getting a free signing certificate is in progress; Shabpa is still new and needs more visibility before it can be approved. Click "More info", then "Run anyway", and ideally compare the file's SHA-256 with the value on this page. All the code is readable on GitHub.</p></details>
     <details><summary>Why do some antivirus programs flag it?</summary>
@@ -357,6 +590,7 @@
     <a href="https://github.com/MrPitPot/shabpa" rel="noopener">GitHub</a>
     <a href="https://github.com/MrPitPot/shabpa/blob/main/SECURITY.md" rel="noopener">Security</a>
     <a href="https://github.com/MrPitPot/shabpa/blob/main/CODE_SIGNING_POLICY.md" rel="noopener">Signing policy</a>
+    <a href="https://github.com/MrPitPot/shabpa/blob/main/CHANGELOG.md" rel="noopener">Changelog</a>
   </nav>
 </footer>
 

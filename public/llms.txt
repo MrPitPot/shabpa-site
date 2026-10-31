@@ -1,0 +1,19 @@
+# Shabpa (شب‌پا)
+
+> Free, open-source (MIT) Windows 10/11 utility in Persian and English: scheduled shutdown and sleep with a cancellable countdown, a game overlay (FPS, temperatures, ping) that injects nothing into games, per-app internet speed limits, game tuning with full undo, an offline command box (Bidar), tasks and focus, verified backups, system health, night light and a Telegram remote. No telemetry, no accounts.
+
+- [Home (Persian)](https://shabpa.ir/)
+- [Home (English)](https://shabpa.ir/en/)
+- [Source code and releases](https://github.com/MrPitPot/shabpa)
+- [Changelog](https://github.com/MrPitPot/shabpa/blob/main/CHANGELOG.md)
+- [Security policy](https://github.com/MrPitPot/shabpa/blob/main/SECURITY.md)
+
+## Guides
+- [Shutdown timer](https://shabpa.ir/en/shutdown-timer/)
+- [Game overlay (FPS, temperatures, ping)](https://shabpa.ir/en/game-overlay/)
+- [Per-app network limits and steady ping](https://shabpa.ir/en/lower-ping/)
+- [Game tuning](https://shabpa.ir/en/game-tuning/)
+- [App, driver and Windows updates](https://shabpa.ir/en/updates/)
+- [Night light and screen dimmer](https://shabpa.ir/en/night-light/)
+- [Backup and clean-up](https://shabpa.ir/en/backup-cleanup/)
+- [System health and hidden Windows errors](https://shabpa.ir/en/health-check/)

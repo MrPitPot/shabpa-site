@@ -1,13 +1,165 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://shabpa.ir/</loc>
+    <lastmod>2026-10-31</lastmod>
+    <priority>1.0</priority>
     <xhtml:link rel="alternate" hreflang="fa" href="https://shabpa.ir/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://shabpa.ir/en/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://shabpa.ir/"/>
+    <image:image><image:loc>https://shabpa.ir/assets/img/home.webp</image:loc></image:image><image:image><image:loc>https://shabpa.ir/assets/img/tuning.webp</image:loc></image:image><image:image><image:loc>https://shabpa.ir/assets/img/assistant.webp</image:loc></image:image>
   </url>
   <url>
     <loc>https://shabpa.ir/en/</loc>
+    <lastmod>2026-10-31</lastmod>
+    <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="fa" href="https://shabpa.ir/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://shabpa.ir/en/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://shabpa.ir/"/>
+    <image:image><image:loc>https://shabpa.ir/assets/img/en/home.webp</image:loc></image:image><image:image><image:loc>https://shabpa.ir/assets/img/en/tuning.webp</image:loc></image:image><image:image><image:loc>https://shabpa.ir/assets/img/en/assistant.webp</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://shabpa.ir/shutdown-timer/</loc>
+    <lastmod>2026-10-31</lastmod>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://shabpa.ir/shutdown-timer/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://shabpa.ir/en/shutdown-timer/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://shabpa.ir/shutdown-timer/"/>
+    <image:image><image:loc>https://shabpa.ir/assets/img/power.webp</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://shabpa.ir/en/shutdown-timer/</loc>
+    <lastmod>2026-10-31</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://shabpa.ir/shutdown-timer/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://shabpa.ir/en/shutdown-timer/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://shabpa.ir/shutdown-timer/"/>
+    <image:image><image:loc>https://shabpa.ir/assets/img/en/power.webp</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://shabpa.ir/game-overlay/</loc>
+    <lastmod>2026-10-31</lastmod>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://shabpa.ir/game-overlay/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://shabpa.ir/en/game-overlay/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://shabpa.ir/game-overlay/"/>
+    <image:image><image:loc>https://shabpa.ir/assets/img/overlay.webp</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://shabpa.ir/en/game-overlay/</loc>
+    <lastmod>2026-10-31</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://shabpa.ir/game-overlay/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://shabpa.ir/en/game-overlay/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://shabpa.ir/game-overlay/"/>
+    <image:image><image:loc>https://shabpa.ir/assets/img/en/overlay.webp</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://shabpa.ir/lower-ping/</loc>
+    <lastmod>2026-10-31</lastmod>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://shabpa.ir/lower-ping/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://shabpa.ir/en/lower-ping/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://shabpa.ir/lower-ping/"/>
+    <image:image><image:loc>https://shabpa.ir/assets/img/ping.webp</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://shabpa.ir/en/lower-ping/</loc>
+    <lastmod>2026-10-31</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://shabpa.ir/lower-ping/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://shabpa.ir/en/lower-ping/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://shabpa.ir/lower-ping/"/>
+    <image:image><image:loc>https://shabpa.ir/assets/img/en/ping.webp</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://shabpa.ir/game-tuning/</loc>
+    <lastmod>2026-10-31</lastmod>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://shabpa.ir/game-tuning/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://shabpa.ir/en/game-tuning/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://shabpa.ir/game-tuning/"/>
+    <image:image><image:loc>https://shabpa.ir/assets/img/tuning.webp</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://shabpa.ir/en/game-tuning/</loc>
+    <lastmod>2026-10-31</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://shabpa.ir/game-tuning/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://shabpa.ir/en/game-tuning/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://shabpa.ir/game-tuning/"/>
+    <image:image><image:loc>https://shabpa.ir/assets/img/en/tuning.webp</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://shabpa.ir/updates/</loc>
+    <lastmod>2026-10-31</lastmod>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://shabpa.ir/updates/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://shabpa.ir/en/updates/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://shabpa.ir/updates/"/>
+    <image:image><image:loc>https://shabpa.ir/assets/img/updates.webp</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://shabpa.ir/en/updates/</loc>
+    <lastmod>2026-10-31</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://shabpa.ir/updates/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://shabpa.ir/en/updates/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://shabpa.ir/updates/"/>
+    <image:image><image:loc>https://shabpa.ir/assets/img/en/updates.webp</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://shabpa.ir/night-light/</loc>
+    <lastmod>2026-10-31</lastmod>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://shabpa.ir/night-light/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://shabpa.ir/en/night-light/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://shabpa.ir/night-light/"/>
+    <image:image><image:loc>https://shabpa.ir/assets/img/comfort.webp</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://shabpa.ir/en/night-light/</loc>
+    <lastmod>2026-10-31</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://shabpa.ir/night-light/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://shabpa.ir/en/night-light/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://shabpa.ir/night-light/"/>
+    <image:image><image:loc>https://shabpa.ir/assets/img/en/comfort.webp</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://shabpa.ir/backup-cleanup/</loc>
+    <lastmod>2026-10-31</lastmod>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://shabpa.ir/backup-cleanup/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://shabpa.ir/en/backup-cleanup/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://shabpa.ir/backup-cleanup/"/>
+    <image:image><image:loc>https://shabpa.ir/assets/img/backup.webp</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://shabpa.ir/en/backup-cleanup/</loc>
+    <lastmod>2026-10-31</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://shabpa.ir/backup-cleanup/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://shabpa.ir/en/backup-cleanup/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://shabpa.ir/backup-cleanup/"/>
+    <image:image><image:loc>https://shabpa.ir/assets/img/en/backup.webp</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://shabpa.ir/health-check/</loc>
+    <lastmod>2026-10-31</lastmod>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://shabpa.ir/health-check/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://shabpa.ir/en/health-check/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://shabpa.ir/health-check/"/>
+    <image:image><image:loc>https://shabpa.ir/assets/img/health.webp</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://shabpa.ir/en/health-check/</loc>
+    <lastmod>2026-10-31</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://shabpa.ir/health-check/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://shabpa.ir/en/health-check/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://shabpa.ir/health-check/"/>
+    <image:image><image:loc>https://shabpa.ir/assets/img/en/health.webp</image:loc></image:image>
   </url>
 </urlset>

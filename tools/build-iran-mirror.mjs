@@ -15,7 +15,7 @@
 // No dependencies; needs Node 18+.
 
 import { createHash } from "node:crypto";
-import { cp, mkdir, rm, writeFile, readFile } from "node:fs/promises";
+import { cp, mkdir, rm, writeFile, readFile, readdir } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 
@@ -51,13 +51,24 @@ await writeFile(path.join(out, "api", "latest"), JSON.stringify({
 
 if (subpath) {
   // Every page learns where the site root is (meta site-root) and that links need an explicit index.html.
-  const pages = [["index.html", "./", (h) => h.replace('href="/en/"', 'href="en/index.html"')],
-                 ["en/index.html", "../", (h) => h.replace(/(id="langSwitch" href=)"\/"/, '$1"../index.html"')]];
-  for (const [file, prefix, fix] of pages) {
+  // Root-absolute links ("/en/", "/#download", "/assets/x.css", "/shutdown-timer/") become relative to the page.
+  const pages = [];
+  const walk = async (dir, depth) => {
+    for (const ent of await readdir(path.join(out, dir), { withFileTypes: true })) {
+      const rel = path.posix.join(dir, ent.name);
+      if (ent.isDirectory()) { if (!["assets", "download", "api", "update", ".well-known"].includes(ent.name)) await walk(rel, depth + 1); }
+      else if (ent.name === "index.html") pages.push([rel, depth]);
+    }
+  };
+  await walk(".", 0);
+  for (const [file, depth] of pages) {
+    const prefix = depth === 0 ? "" : "../".repeat(depth);
     let html = await readFile(path.join(out, file), "utf8");
-    html = fix(html);
-    html = html.replace(/(href|src)="\/assets\//g, `$1="${prefix === "./" ? "" : prefix}assets/`);
-    html = html.replace('<meta charset="utf-8">', `<meta charset="utf-8">\n<meta name="site-root" content="${prefix}">\n<meta name="site-index" content="index.html">`);
+    html = html.replace(/(href|src)="\/(?!\/)([^"#]*)(#[^"]*)?"/g, (_m, attr, p, hash) =>
+      `${attr}="${prefix}${p === "" || p.endsWith("/") ? p + "index.html" : p}${hash || ""}"`);
+    html = html.replace('<meta charset="utf-8">', `<meta charset="utf-8">
+<meta name="site-root" content="${prefix || "./"}">
+<meta name="site-index" content="index.html">`);
     const stray = html.match(/(href|src)="\/(?!\/)[^"]*"/g);
     if (stray) throw new Error(`${file}: root-absolute links left: ${stray.join(", ")}`);
     await writeFile(path.join(out, file), html);

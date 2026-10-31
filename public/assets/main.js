@@ -281,15 +281,34 @@
       cio.unobserve(e.target);
       var el = $("b", e.target), to = parseInt(el.getAttribute("data-count"), 10);
       if (isNaN(to) || reduce || to === 0) return;
-      var t0 = performance.now();
+      var t0 = performance.now(), fmt = el.hasAttribute("data-fmt");
       (function step(t) {
-        var k = clamp((t - t0) / 1100, 0, 1);
-        el.textContent = fa(Math.round(to * smooth(k)));
+        var k = clamp((t - t0) / 1100, 0, 1), v = Math.round(to * smooth(k));
+        el.textContent = fmt ? new Intl.NumberFormat(T.locale).format(v) : fa(v);
         if (k < 1) requestAnimationFrame(step);
       })(t0);
     });
   }, { threshold: 0.6 });
-  $$(".stat").forEach(function (el) { cio.observe(el); });
+  $$(".stat").forEach(function (el) { if (!el.hidden) cio.observe(el); });
+
+  /* ---------- تعداد دانلود (مجموع GitHub، winget و خود سایت؛ اگه سرور جواب نده، کادرش پنهان می‌مونه) ---------- */
+  (function fetchStats() {
+    var tile = $("#statDl"); if (!tile) return;
+    var ctl = "AbortController" in window ? new AbortController() : null;
+    var to = setTimeout(function () { if (ctl) ctl.abort(); }, 10000);
+    fetch(ROOT + "api/stats", { signal: ctl ? ctl.signal : undefined, credentials: "omit" })
+      .then(function (r) { if (!r.ok) throw 0; return r.json(); })
+      .then(function (d) {
+        clearTimeout(to);
+        if (!d || typeof d.total !== "number" || !isFinite(d.total) || d.total < 0 || d.total > 1e9) return;
+        var b = $("b", tile);
+        b.setAttribute("data-count", String(Math.floor(d.total)));
+        b.textContent = new Intl.NumberFormat(T.locale).format(Math.floor(d.total));
+        tile.hidden = false;
+        cio.observe(tile);
+      })
+      .catch(function () { /* بدون آمار هم سایت کامل کار می‌کنه */ });
+  })();
 
   /* ---------- شبیه‌ساز خاموشی (فقط نمایشه، به سیستم دست نمی‌زنه) ---------- */
   (function sim() {
