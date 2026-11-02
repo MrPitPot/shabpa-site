@@ -258,11 +258,11 @@ UI = {
     "fa": {"dir": "rtl", "home": "خانه", "features": "امکانات", "dl": "دانلود", "other": "English", "other_title": "View this page in English", "path": "/",
            "guides": "راهنماهای شب‌پا", "faq": "سوالات پرتکرار", "related": "بخش‌های دیگه‌ی شب‌پا", "cta_h": "شب‌پا رو رایگان بگیر", "cta_p": "رایگان و متن‌باز، برای ویندوز ۱۰ و ۱۱. SHA-256 هر نسخه کنار دانلود منتشر می‌شه.",
            "cta": "دانلود شب‌پا", "locale": "fa_IR", "alt_locale": "en_US", "site": "شب‌پا", "skip": "رفتن به محتوا", "nav": "منوی اصلی", "crumb_nav": "مسیر صفحه",
-           "foot": "شب‌پا · ساخته‌ی", "lic": "مجوز MIT", "gh": "گیت‌هاب", "sec": "امنیت", "chg": "تغییرات", "pol": "سیاست امضا"},
+           "copy": "© ۱۴۰۵ شب‌پا. کلیه‌ی حقوق این وب‌سایت (متن، تصاویر و طراحی) محفوظ است. نرم‌افزار شب‌پا تحت مجوز متن‌باز MIT منتشر شده و استفاده از آن آزاده.", "foot": "شب‌پا · ساخته‌ی", "lic": "مجوز MIT", "gh": "گیت‌هاب", "sec": "امنیت", "chg": "تغییرات", "pol": "سیاست امضا"},
     "en": {"dir": "ltr", "home": "Home", "features": "Features", "dl": "Download", "other": "فارسی", "other_title": "مشاهده‌ی این صفحه به فارسی", "path": "/en/",
            "guides": "Shabpa guides", "faq": "Frequently asked questions", "related": "More from Shabpa", "cta_h": "Get Shabpa for free", "cta_p": "Free and open source, for Windows 10 and 11. The SHA-256 of every version is published next to the download.",
            "cta": "Download Shabpa", "locale": "en_US", "alt_locale": "fa_IR", "site": "Shabpa", "skip": "Skip to content", "nav": "Main menu", "crumb_nav": "Breadcrumb",
-           "foot": "Shabpa · made by", "lic": "MIT license", "gh": "GitHub", "sec": "Security", "chg": "Changelog", "pol": "Signing policy"},
+           "copy": "© 2026 Shabpa. All rights to this website (text, images and design) are reserved. The Shabpa software itself is released under the open-source MIT license.", "foot": "Shabpa · made by", "lic": "MIT license", "gh": "GitHub", "sec": "Security", "chg": "Changelog", "pol": "Signing policy"},
 }
 
 
@@ -380,6 +380,7 @@ def render(lang, p):
     <a href="https://github.com/MrPitPot/shabpa/blob/main/SECURITY.md" rel="noopener">{u['sec']}</a>
     <a href="https://github.com/MrPitPot/shabpa/blob/main/CHANGELOG.md" rel="noopener">{u['chg']}</a>
   </nav>
+  <p class="legal">{u['copy']}</p>
 </footer>
 </body>
 </html>

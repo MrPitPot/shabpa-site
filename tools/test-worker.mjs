@@ -7,7 +7,7 @@ globalThis.caches = { default: {
   async put(req, res) { store.set(req.url, await res.text()); },
 } };
 const INSTALLER = new Uint8Array([1, 2, 3, 4]);
-let githubCalls = 0, installerCalls = 0;
+let githubCalls = 0, installerCalls = 0, githubDown = false;
 const sha = [...new Uint8Array(await crypto.subtle.digest("SHA-256", INSTALLER))].map((b) => b.toString(16).padStart(2, "0")).join("");
 globalThis.fetch = async (u) => {
   u = String(u);
@@ -16,6 +16,7 @@ globalThis.fetch = async (u) => {
   }
   if (u.includes("/releases?per_page=100")) {
     githubCalls++;
+    if (githubDown) return new Response("rate limited", { status: 403 });
     return Response.json([
       { assets: [{ name: "ShabpaSetup.exe", download_count: 100 }, { name: "ShabpaSetup.exe.sha256", download_count: 55 }, { name: "latest.json", download_count: 9 }] },
       { assets: [{ name: "ShabpaSetup.exe", download_count: 20 }] },
@@ -24,8 +25,8 @@ globalThis.fetch = async (u) => {
   if (u.includes("/download/v9.9.9/ShabpaSetup.exe")) { installerCalls++; return new Response(INSTALLER); }
   throw new Error("unexpected fetch " + u);
 };
-const db = { rows: {}, prepare(sql) { return { _k: null, bind(k) { this._k = k; return this; },
-  async run() { db.rows[this._k] = (db.rows[this._k] || 0) + 1; },
+const db = { rows: {}, prepare(sql) { return { _k: null, _v: null, bind(k, v) { this._k = k; this._v = v; return this; },
+  async run() { if (sql.includes("'gh_total'")) { db.rows.gh_total = Math.max(db.rows.gh_total || 0, this._k); return; } db.rows[this._k] = (db.rows[this._k] || 0) + 1; },
   async all() { return { results: Object.entries(db.rows).map(([k, n]) => ({ k, n })) }; } }; } };
 
 const { default: worker } = await import("../src/worker.js");
@@ -54,4 +55,16 @@ assert.deepEqual([r.github, r.site, r.total], [120, 2, 121]);
 assert.equal((await call("/api/stats", env)).headers.get("Cache-Control"), "public, max-age=300");
 assert.equal((await call("/api/stats", env, {})).status, 200);
 assert.equal((await worker.fetch(new Request("https://shabpa.ir/api/stats", { method: "POST" }), env, ctx)).status, 405);
+// GitHub refuses (rate limit): the last stored total keeps the number on screen and nothing goes backwards
+githubDown = true;
+store.delete("https://shabpa.ir/__cache/gh-downloads");
+r = await (await call("/api/stats", env)).json();
+assert.deepEqual([r.github, r.site, r.total], [120, 2, 121], "falls back to the stored GitHub total");
+const calls = githubCalls;
+await call("/api/stats", env);
+assert.equal(githubCalls, calls, "after a refusal it does not ask GitHub again straight away");
+// a brand-new database with GitHub down: no number rather than a wrong one
+db.rows = {}; store.clear();
+r = await (await call("/api/stats", env)).json();
+assert.equal(r.total, null);
 console.log("worker counters: ok");

@@ -340,3 +340,4 @@ html.lite .card{box-shadow:0 8px 24px rgba(20,60,120,.14)}
 .guide b{color:var(--accent)}
 .guide span{font-size:14.5px;color:var(--dim);line-height:1.7}
 @media(max-width:560px){.guides{padding-inline:16px}.doc main{padding-inline:16px}}
+.foot .legal{flex-basis:100%;text-align:center;font-size:13.5px;color:var(--dim);opacity:.85;margin-top:4px}

@@ -78,47 +78,60 @@ async function bump(env, key) {
 }
 
 async function readCounters(env) {
-  const out = { site: 0, fills: 0, enabled: !!env.DB };
+  const out = { site: 0, fills: 0, gh: null, enabled: !!env.DB };
   if (!env.DB) return out;
   try {
-    const { results } = await env.DB.prepare("SELECT k, n FROM counters WHERE k IN ('site_downloads', 'proxy_fills')").all();
-    for (const r of results || []) { if (r.k === "site_downloads") out.site = r.n | 0; else out.fills = r.n | 0; }
+    const { results } = await env.DB.prepare("SELECT k, n FROM counters WHERE k IN ('site_downloads', 'proxy_fills', 'gh_total')").all();
+    for (const r of results || []) {
+      if (r.k === "site_downloads") out.site = r.n | 0;
+      else if (r.k === "proxy_fills") out.fills = r.n | 0;
+      else if (r.k === "gh_total") out.gh = r.n | 0;
+    }
   } catch (e) { out.enabled = false; }
   return out;
 }
 
-/** Sum of download_count over every release's installer asset. Cached 10 minutes, with a day-long stale copy. */
-async function githubDownloads(ctx) {
+/* The last good GitHub total is kept in D1 and only ever goes up (GitHub's own count never decreases), so a failed refresh cannot hide the number or move it backwards. */
+async function rememberGithub(env, n) {
+  if (!env.DB) return;
+  try { await env.DB.prepare("INSERT INTO counters (k, n) VALUES ('gh_total', ?1) ON CONFLICT(k) DO UPDATE SET n = MAX(n, excluded.n)").bind(n).run(); } catch (e) { /* ignore */ }
+}
+
+/** Sum of download_count over every release's installer asset. Fresh for 10 minutes; if GitHub refuses (rate limit) the last stored total is used. */
+async function githubDownloads(ctx, env, remembered) {
   const cache = caches.default;
   const fresh = new Request("https://shabpa.ir/__cache/gh-downloads");
-  const stale = new Request("https://shabpa.ir/__cache/gh-downloads-stale");
+  const failed = new Request("https://shabpa.ir/__cache/gh-downloads-failed");
   const hit = await cache.match(fresh);
   if (hit) return (await hit.json()).n;
+  if (await cache.match(failed)) return remembered; /* GitHub just refused us: do not ask again for 2 minutes */
   try {
+    const headers = { Accept: "application/vnd.github+json", "User-Agent": "shabpa-site" };
+    if (env.GITHUB_TOKEN) headers.Authorization = `Bearer ${env.GITHUB_TOKEN}`; /* optional secret: lifts the 60-requests-an-hour limit */
     let n = 0;
     for (let page = 1; page <= 5; page++) {
-      const r = await fetch(`${RELEASES_API}&page=${page}`, { headers: { Accept: "application/vnd.github+json", "User-Agent": "shabpa-site" } });
+      const r = await fetch(`${RELEASES_API}&page=${page}`, { headers });
       if (!r.ok) throw new Error("github " + r.status);
       const list = await r.json();
       if (!Array.isArray(list)) throw new Error("unexpected shape");
       for (const rel of list) for (const a of rel.assets || []) if (a && a.name === FILE && Number.isFinite(a.download_count)) n += a.download_count;
       if (list.length < 100) break;
     }
-    const body = JSON.stringify({ n });
     ctx.waitUntil(Promise.all([
-      cache.put(fresh, new Response(body, { headers: { "Cache-Control": "max-age=600" } })),
-      cache.put(stale, new Response(body, { headers: { "Cache-Control": "max-age=86400" } })),
+      cache.put(fresh, new Response(JSON.stringify({ n }), { headers: { "Cache-Control": "max-age=600" } })),
+      rememberGithub(env, n),
     ]));
-    return n;
+    return Math.max(n, remembered || 0);
   } catch (e) {
-    const old = await cache.match(stale);
-    if (old) return (await old.json()).n;
-    return null;
+    console.log(JSON.stringify({ evt: "github-stats-failed", err: String(e && e.message || e) }));
+    ctx.waitUntil(cache.put(failed, new Response("1", { headers: { "Cache-Control": "max-age=120" } })));
+    return remembered;
   }
 }
 
 async function stats(ctx, env) {
-  const [github, c] = await Promise.all([githubDownloads(ctx), readCounters(env)]);
+  const c = await readCounters(env);
+  const github = await githubDownloads(ctx, env, c.gh);
   /* The site copies the installer from GitHub only when its own cache is empty; that one GitHub download is not a visitor, so it is taken off. */
   const total = github === null ? null : Math.max(0, github + c.site - c.fills);
   return { github, site: c.enabled ? c.site : null, total, updated: new Date().toISOString() };
