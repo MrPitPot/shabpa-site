@@ -389,7 +389,7 @@ def render(lang, p):
 
 
 # ---- changelog page -------------------------------------------------------------------------------------------------------------------------------------------
-# Short, plain notes per version: the patch notes kept next to CHANGELOG.md in the app repo (patch-note-<v>.fa.md and .en.md). CHANGELOG.md gives the order and the dates.
+# One short sentence per version: the patch notes kept next to CHANGELOG.md in the app repo (patch-note-<v>.fa.md and .en.md). CHANGELOG.md gives the order and the dates.
 # A version without both notes is left out: the technical entry in CHANGELOG.md is not meant for visitors.
 CHANGELOG_TEXT = {
     "fa": {"name": "تغییرات نسخه‌ها", "title": "تغییرات نسخه‌ها | شب‌پا", "desc": "فهرست کوتاه و ساده‌ی تغییرات هر نسخه‌ی شب‌پا: چی تازه شده و چی درست شده.", "h1": "تغییرات نسخه‌ها",
@@ -400,22 +400,11 @@ CHANGELOG_TEXT = {
 
 
 def load_notes(path):
-    """A patch note as (heading, [bullets]) groups. The title line and the download part are dropped."""
-    groups, cur, skip = [], None, False
-    for raw in open(path, encoding="utf-8").read().splitlines()[1:]:
-        line = raw.strip()
-        if not line:
-            continue
-        if line.startswith("•"):
-            if cur is not None and not skip:
-                cur[1].append(line.lstrip("• ").strip())
-            continue
-        skip = line.startswith("\u2b07")
-        if skip:
-            continue
-        cur = [re.sub(r"^[^\w\u0600-\u06FF]+", "", line).strip(), []]
-        groups.append(cur)
-    return [(h, b) for h, b in groups if h]
+    """A patch note is one short sentence: the first non-empty line of the file."""
+    for raw in open(path, encoding="utf-8").read().splitlines():
+        if raw.strip():
+            return raw.strip()
+    return ""
 
 
 def versions():
@@ -438,9 +427,7 @@ def render_changelog(lang):
     fa_url, en_url = SITE + "/changelog/", SITE + "/en/changelog/"
     cards = []
     for v, d, notes in versions():
-        body = ""
-        for heading, bullets in notes[lang]:
-            body += f"<h3>{e(heading)}</h3><ul class=\"opts\">" + "".join(f"<li>{e(b)}</li>" for b in bullets) + "</ul>" if bullets else f"<p>{e(heading)}</p>"
+        body = f"<p>{e(notes[lang])}</p>"
         shown = d if lang == "en" else re.sub(r"\d", lambda m: "۰۱۲۳۴۵۶۷۸۹"[int(m.group())], d)
         vs = v if lang == "en" else re.sub(r"\d", lambda m: "۰۱۲۳۴۵۶۷۸۹"[int(m.group())], v)
         cards.append(f'  <section class="card text" id="v{v}">\n    <h2><span dir="ltr">{vs}</span> <small>· <time datetime="{d}">{shown}</time></small></h2>\n    {body}\n  </section>')

@@ -90,10 +90,13 @@
     "Game overlay with FPS, temperatures, RAM and ping that injects nothing into the game",
     "Per-app internet speed caps and in-game protection",
     "Game tuning with ten Windows settings and full undo",
-    "Offline command box in English and Persian",
-    "Tasks, focus timer and profiles",
+    "Offline command box in English and Persian (Boofi)",
+    "Case and peripheral lighting through OpenRGB",
+    "Tasks, focus timer, alarm reminders and profiles",
     "Backups, disk analysis and system health",
+    "App and graphics-driver updates with your approval",
     "Night light, screen dimming and weather",
+    "Medals, feathers and 52 colour and special themes",
     "Remote control through a Telegram bot"
    ]
   },
@@ -135,7 +138,7 @@
     },
     {
      "@type": "Question",
-     "name": "Does the Bidar assistant need the internet or AI?",
+     "name": "Does the Boofi assistant need the internet or AI?",
      "acceptedAnswer": {
       "@type": "Answer",
       "text": "No. Commands are understood on your own PC with no language model, and no text is sent anywhere. Anything that has an effect first shows a card with the exact time and does not run without your confirmation."
@@ -274,9 +277,9 @@
 </section>
 
 <section class="stats" aria-label="Shabpa at a glance">
-  <div class="stat reveal"><b data-count="22">22</b><span>color themes</span></div>
+  <div class="stat reveal"><b data-count="52">52</b><span>color and special themes</span></div>
   <div class="stat reveal"><b data-count="2">2</b><span>languages: Persian &amp; English</span></div>
-  <div class="stat reveal"><b data-count="12">12</b><span>feature areas in one app</span></div>
+  <div class="stat reveal"><b data-count="15">15</b><span>feature areas in one app</span></div>
   <div class="stat reveal"><b>MIT</b><span>open source &amp; free</span></div>
   <div class="stat reveal" id="statDl" hidden title="Total installer downloads from GitHub, winget and this site"><b data-count="0" data-fmt>0</b><span>downloads</span></div>
   <div class="stat stat-rate reveal" id="statRate" hidden title="Ratings users chose to send from inside the app; self-reported and not verified"><b></b><span id="rateLine"></span><div class="rate-bars" id="rateBars"></div><small>Self-reported by users, not verified</small></div>
@@ -419,17 +422,18 @@
 
 <article class="chap flip" data-title="Command box">
   <div class="card text">
-    <span class="kick">10 · Bidar, the assistant</span>
-    <h2>Type what you want, Bidar the owl does it</h2>
+    <span class="kick">10 · Boofi, the assistant</span>
+    <h2>Type what you want, Boofi the owl does it</h2>
     <p>A command box that opens with Ctrl+Alt+Space or from the tray menu. Type in English or Persian: "shut down in an hour and a quarter", "open DNS", "CPU temperature?". It works fully offline, and your text never leaves the PC.</p>
     <ul class="opts">
       <li>Shutdown, sleep, lock, reminders, focus timer, night light and conditions like "when the download finishes"</li>
       <li>Every command shows a card with the exact time first; if it is unclear (2 am or 2 pm?) it asks and runs nothing</li>
       <li>Opens pages, sets the overlay and theme, frees memory, and answers questions like the time, ping and system status</li>
+      <li>Makes a strong password, converts units ("100 c to f") and tells you how many days are left to Nowruz, Yalda or Friday</li>
       <li>Home greets you with about 150 new lines that depend on the hour, season, special days and the game you play</li>
     </ul>
   </div>
-  <figure class="shot" data-tilt><div class="win win-app"><img loading="lazy" decoding="async" src="/assets/img/en/assistant.webp" width="1280" height="800" alt="Shabpa command box and Bidar the owl"></div></figure>
+  <figure class="shot" data-tilt><div class="win win-app"><img loading="lazy" decoding="async" src="/assets/img/en/assistant.webp" width="1280" height="800" alt="Shabpa command box and Boofi the owl"></div></figure>
 </article>
 
 <article class="chap" data-title="Weather">
@@ -441,9 +445,39 @@
   <figure class="shot" data-tilt><div class="win win-app"><img loading="lazy" decoding="async" src="/assets/img/en/weather.webp" width="1280" height="800" alt="Weather with an animated sky"></div></figure>
 </article>
 
+<article class="chap flip" data-title="Lighting">
+  <div class="card text">
+    <span class="kick">12 · Lighting</span>
+    <h2>Your case lights, all together and in one click</h2>
+    <p>Control fans, memory, cooler, strips, graphics card, keyboard and mouse from one page, with no separate software for each brand. With the "Enable lighting" button, Shabpa fetches the free, open-source OpenRGB once from its official release page and only uses it if its SHA-256 matches the value fixed inside the app.</p>
+    <ul class="opts">
+      <li>Flowing effects such as a full rainbow, northern lights, sunset, neon, fire wave and ocean depth, played in step on every device at once</li>
+      <li>Click any part in the picture of the case and desk to set it on its own; keyboard and mouse are separate parts</li>
+      <li>"Off" always ends dark, even at sleep and shutdown</li>
+      <li>For hardware that OpenRGB supports; it needs Windows 10 1809 or newer and the Visual C++ Runtime, and Shabpa tells you which one is missing</li>
+    </ul>
+  </div>
+  <figure class="shot" data-tilt><div class="win win-app"><img loading="lazy" decoding="async" src="/assets/img/en/lighting.webp" width="1280" height="800" alt="The Lighting page: the case and desk with each part's live colour"></div></figure>
+</article>
+
+<article class="chap" data-title="Medals &amp; Boofi">
+  <div class="card text">
+    <span class="kick">13 · Medals &amp; Boofi</span>
+    <h2>Everything you do earns feathers and medals</h2>
+    <p>The hours you really spend with Shabpa, the quests you finish and the medals you earn collect feathers and grow Boofi, Shabpa's owl, through 100 levels. By default all of it stays on your own PC.</p>
+    <ul class="opts">
+      <li>82 medals, from bronze to legendary, a few of them hidden</li>
+      <li>Spend feathers on Boofi's wardrobe (about 90 parts: hats, glasses, watches, lanterns and fur colours) and on 30 special animated themes</li>
+      <li>Cloud save is entirely optional: log in with Telegram (no email, no password) so your progress survives a Windows reinstall; only the progress file is sent, never your name, paths or usage details</li>
+      <li>It is never pushed on you: at most three suggestions, two weeks apart, and "no thanks" silences it for good</li>
+    </ul>
+  </div>
+  <figure class="shot" data-tilt><div class="win win-app"><img loading="lazy" decoding="async" src="/assets/img/en/rewards.webp" width="1280" height="800" alt="Medals and quests: feathers, level and Boofi"></div></figure>
+</article>
+
 <article class="chap flip" data-title="Remote control">
   <div class="card text">
-    <span class="kick">12 · Remote control</span>
+    <span class="kick">14 · Remote control</span>
     <h2>Manage your PC from Telegram</h2>
     <p>Optional, and linked with a one-time code. The app never sees the bot's token, and only a fixed list of commands can run.</p>
     <ul class="opts">
@@ -469,7 +503,7 @@
 <section class="try" id="try" data-title="Try it">
   <div class="card text try-card">
     <div>
-      <span class="kick">13 · Try it</span>
+      <span class="kick">15 · Try it</span>
       <h2>Simulate a shutdown right here</h2>
       <p>This is only a demo and never touches your PC. In the real app, every shutdown also shows a countdown first, and you can cancel it at any moment.</p>
     </div>
@@ -491,20 +525,24 @@
 
 <section class="themes" id="themes" data-title="Look">
   <div class="card text wide">
-    <span class="kick">14 · Look</span>
-    <h2>22 color themes, Persian and English, light and dark</h2>
-    <p>Make Shabpa yours: from forest green to neon, from midnight dark to daylight bright, plus a seasonal Halloween theme. The interface comes in both Persian and English, and you can switch with one click.</p>
+    <span class="kick">16 · Look</span>
+    <h2>52 themes: 22 colour themes and 30 special animated ones</h2>
+    <p>Make Shabpa yours: 22 free colour themes, from forest green to neon and from midnight dark to daylight bright, with a seasonal Halloween theme. On top of them are 30 special themes with animated backdrops, such as Persepolis, Cyrus the Great, Yalda night, code rain and galaxy, that you unlock with feathers earned from real use and quests. The interface comes in both Persian and English, and you can switch with one click.</p>
   </div>
   <div class="themes-row">
     <figure class="shot" data-tilt><div class="win win-app"><img loading="lazy" decoding="async" src="/assets/img/en/theme-sunset.webp" width="1280" height="800" alt="Sunset theme with warm colors"></div><figcaption>Sunset</figcaption></figure>
     <figure class="shot" data-tilt><div class="win win-app"><img loading="lazy" decoding="async" src="/assets/img/en/theme-pink.webp" width="1280" height="800" alt="Pink light theme"></div><figcaption>Pink (light)</figcaption></figure>
     <figure class="shot" data-tilt><div class="win win-app"><img loading="lazy" decoding="async" src="/assets/img/en/theme-forest.webp" width="1280" height="800" alt="Forest green theme"></div><figcaption>Forest green</figcaption></figure>
   </div>
+  <div class="themes-row themes-row-2">
+    <figure class="shot" data-tilt><div class="win win-app"><img loading="lazy" decoding="async" src="/assets/img/en/theme-persepolis.webp" width="1280" height="800" alt="The special Persepolis theme"></div><figcaption>Persepolis (special)</figcaption></figure>
+    <figure class="shot" data-tilt><div class="win win-app"><img loading="lazy" decoding="async" src="/assets/img/en/theme-cyrus.webp" width="1280" height="800" alt="The special Cyrus the Great theme"></div><figcaption>Cyrus the Great (special)</figcaption></figure>
+  </div>
 </section>
 
 <section class="trust" id="trust" data-title="Privacy">
   <div class="card text wide">
-    <span class="kick">15 · Privacy</span>
+    <span class="kick">17 · Privacy</span>
     <h2>Whatever it is, it stays on your PC</h2>
     <div class="trust-grid">
       <div><b>Your data stays yours</b><span>Everything is stored in your own AppData folder, and the app reports nothing anywhere, except a star rating if you choose to send one (only the number of stars and the app version). Only this website collects anonymous, cookie-free visit counts.</span></div>
@@ -562,7 +600,7 @@
       <p>The overlay injects nothing into the game; it is only drawn on screen, so it does not interfere with anti-cheat. Still, we cannot guarantee it for every specific anti-cheat, so if your game is very strict, check its own rules too.</p></details>
     <details><summary>Is game tuning safe?</summary>
       <p>Yes. It only changes ten documented Windows settings, asks first, keeps your previous value and puts exactly that back when you switch it off. No program, service or file is deleted or disabled.</p></details>
-    <details><summary>Does the Bidar assistant need the internet or AI?</summary>
+    <details><summary>Does the Boofi assistant need the internet or AI?</summary>
       <p>No. Commands are understood on your own PC with no language model, and no text is sent anywhere. Anything that has an effect first shows a card with the exact time and does not run without your confirmation.</p></details>
     <details><summary>What is Shabpa (شب‌پا)?</summary>
       <p>Shabpa is a free, open-source Windows 10 and 11 app, in Persian and English, that brings an automatic shutdown timer, an FPS game overlay, per-app internet control, game tuning, app and driver updates, backups and a system health check into one light app. It has no account and collects no data from your PC.</p></details>
