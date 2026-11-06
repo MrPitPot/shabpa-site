@@ -162,4 +162,20 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://shabpa.ir/health-check/"/>
     <image:image><image:loc>https://shabpa.ir/assets/img/en/health.webp</image:loc></image:image>
   </url>
+  <url>
+    <loc>https://shabpa.ir/changelog/</loc>
+    <lastmod>2026-10-31</lastmod>
+    <priority>0.5</priority>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://shabpa.ir/changelog/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://shabpa.ir/en/changelog/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://shabpa.ir/changelog/"/>
+  </url>
+  <url>
+    <loc>https://shabpa.ir/en/changelog/</loc>
+    <lastmod>2026-10-31</lastmod>
+    <priority>0.4</priority>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://shabpa.ir/changelog/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://shabpa.ir/en/changelog/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://shabpa.ir/changelog/"/>
+  </url>
 </urlset>

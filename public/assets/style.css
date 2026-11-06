@@ -239,6 +239,15 @@ figcaption{margin-top:12px;text-align:center;font-weight:600;font-size:15px;colo
 .stat{background:var(--card);border:1px solid var(--card-b);border-radius:18px;padding:18px 12px;text-align:center;box-shadow:var(--shadow)}
 .stat b{display:block;font-size:34px;line-height:1.3;font-weight:700;background:linear-gradient(100deg,#2b4bff,#8a5cf5);-webkit-background-clip:text;background-clip:text;color:transparent;font-variant-numeric:tabular-nums}
 .stat span{font-size:14px;color:var(--dim)}
+.stat-rate{grid-column:span 2}
+.stat-rate small{display:block;margin-top:8px;font-size:12px;color:var(--dim)}
+.rate-bars{display:grid;gap:3px;max-width:220px;margin:10px auto 0}
+.rate-row{display:grid;grid-template-columns:30px 1fr;gap:8px;align-items:center;font-size:12px;color:var(--dim)}
+.rate-row i{font-style:normal;text-align:end}
+.rate-row progress{width:100%;height:6px;border:0;border-radius:6px;background:var(--card-b);overflow:hidden;appearance:none;-webkit-appearance:none}
+.rate-row progress::-webkit-progress-bar{background:var(--card-b);border-radius:6px}
+.rate-row progress::-webkit-progress-value{background:linear-gradient(100deg,#2b4bff,#8a5cf5);border-radius:6px}
+.rate-row progress::-moz-progress-bar{background:linear-gradient(100deg,#2b4bff,#8a5cf5);border-radius:6px}
 
 /* ---------- شبیه‌ساز ---------- */
 .try{max-width:1100px;margin:0 auto;padding:9vh 24px}

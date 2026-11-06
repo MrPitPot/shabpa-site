@@ -13,6 +13,7 @@ import os
 import re
 import sys
 
+APP = os.environ.get("SHABPA_APP_DIR") or next((d for d in (os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", n) for n in ("Shabpa-boofi", "Shabpa")) if os.path.exists(os.path.join(d, "CHANGELOG.md"))), "")
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "public")
 SITE = "https://shabpa.ir"
 LASTMOD = "2026-10-31"
@@ -378,7 +379,130 @@ def render(lang, p):
   <nav aria-label="Links">
     <a href="https://github.com/MrPitPot/shabpa" rel="noopener">{u['gh']}</a>
     <a href="https://github.com/MrPitPot/shabpa/blob/main/SECURITY.md" rel="noopener">{u['sec']}</a>
-    <a href="https://github.com/MrPitPot/shabpa/blob/main/CHANGELOG.md" rel="noopener">{u['chg']}</a>
+    <a href="{u['path']}changelog/">{u['chg']}</a>
+  </nav>
+  <p class="legal">{u['copy']}</p>
+</footer>
+</body>
+</html>
+"""
+
+
+# ---- changelog page -------------------------------------------------------------------------------------------------------------------------------------------
+# Short, plain notes per version: the patch notes kept next to CHANGELOG.md in the app repo (patch-note-<v>.fa.md and .en.md). CHANGELOG.md gives the order and the dates.
+# A version without both notes is left out: the technical entry in CHANGELOG.md is not meant for visitors.
+CHANGELOG_TEXT = {
+    "fa": {"name": "تغییرات نسخه‌ها", "title": "تغییرات نسخه‌ها | شب‌پا", "desc": "فهرست کوتاه و ساده‌ی تغییرات هر نسخه‌ی شب‌پا: چی تازه شده و چی درست شده.", "h1": "تغییرات نسخه‌ها",
+           "lead": "هر نسخه‌ی شب‌پا چی تازه داشت و چی درست شد؛ کوتاه و بی‌پیچیدگی. فهرست کامل و فنی توی گیت‌هاب هست."},
+    "en": {"name": "Changelog", "title": "Changelog | Shabpa", "desc": "A short, plain list of what changed in every Shabpa version: what is new and what was fixed.", "h1": "Changelog",
+           "lead": "What every Shabpa version added and fixed, short and plain. The full technical list is on GitHub."},
+}
+
+
+def load_notes(path):
+    """A patch note as (heading, [bullets]) groups. The title line and the download part are dropped."""
+    groups, cur, skip = [], None, False
+    for raw in open(path, encoding="utf-8").read().splitlines()[1:]:
+        line = raw.strip()
+        if not line:
+            continue
+        if line.startswith("•"):
+            if cur is not None and not skip:
+                cur[1].append(line.lstrip("• ").strip())
+            continue
+        skip = line.startswith("\u2b07")
+        if skip:
+            continue
+        cur = [re.sub(r"^[^\w\u0600-\u06FF]+", "", line).strip(), []]
+        groups.append(cur)
+    return [(h, b) for h, b in groups if h]
+
+
+def versions():
+    """(version, date, {fa: groups, en: groups}) newest first, only where both notes exist."""
+    out = []
+    if not APP:
+        return out
+    for m in re.finditer(r"^## \[(\d+\.\d+\.\d+)\] - (\d{4}-\d{2}-\d{2})", open(os.path.join(APP, "CHANGELOG.md"), encoding="utf-8").read(), re.M):
+        v, d = m.groups()
+        fa, en = (os.path.join(APP, f"patch-note-{v}.{l}.md") for l in ("fa", "en"))
+        if os.path.exists(fa) and os.path.exists(en):
+            out.append((v, d, {"fa": load_notes(fa), "en": load_notes(en)}))
+    return out
+
+
+def render_changelog(lang):
+    c, u = CHANGELOG_TEXT[lang], UI[lang]
+    other = "en" if lang == "fa" else "fa"
+    me, alt = SITE + u["path"] + "changelog/", SITE + UI[other]["path"] + "changelog/"
+    fa_url, en_url = SITE + "/changelog/", SITE + "/en/changelog/"
+    cards = []
+    for v, d, notes in versions():
+        body = ""
+        for heading, bullets in notes[lang]:
+            body += f"<h3>{e(heading)}</h3><ul class=\"opts\">" + "".join(f"<li>{e(b)}</li>" for b in bullets) + "</ul>" if bullets else f"<p>{e(heading)}</p>"
+        shown = d if lang == "en" else re.sub(r"\d", lambda m: "۰۱۲۳۴۵۶۷۸۹"[int(m.group())], d)
+        vs = v if lang == "en" else re.sub(r"\d", lambda m: "۰۱۲۳۴۵۶۷۸۹"[int(m.group())], v)
+        cards.append(f'  <section class="card text" id="v{v}">\n    <h2><span dir="ltr">{vs}</span> <small>· <time datetime="{d}">{shown}</time></small></h2>\n    {body}\n  </section>')
+    ld = json.dumps({"@context": "https://schema.org", "@graph": [
+        {"@type": "WebPage", "@id": me + "#page", "url": me, "name": c["title"], "description": c["desc"], "inLanguage": lang, "isPartOf": {"@id": SITE + "/#site"}, "dateModified": LASTMOD},
+        {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": u["site"], "item": SITE + u["path"]}, {"@type": "ListItem", "position": 2, "name": c["name"], "item": me}]}]},
+        ensure_ascii=False, indent=1).replace("</", "<\\/")
+    return f"""<!doctype html>
+<html lang="{lang}" dir="{u['dir']}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>{e(c['title'])}</title>
+<meta name="description" content="{e(c['desc'], quote=True)}">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+<meta name="author" content="Mr.PitPot">
+<meta name="theme-color" content="#04061a">
+<meta name="color-scheme" content="dark">
+<link rel="canonical" href="{me}">
+<link rel="alternate" hreflang="fa" href="{fa_url}">
+<link rel="alternate" hreflang="en" href="{en_url}">
+<link rel="alternate" hreflang="x-default" href="{fa_url}">
+<link rel="icon" href="/assets/img/logo.png" type="image/png">
+<link rel="apple-touch-icon" href="/assets/img/logo.png">
+<link rel="preload" href="/assets/fonts/Vazirmatn-Medium.woff2" as="font" type="font/woff2" crossorigin>
+<meta property="og:type" content="website">
+<meta property="og:locale" content="{u['locale']}">
+<meta property="og:site_name" content="{u['site']}">
+<meta property="og:title" content="{e(c['title'], quote=True)}">
+<meta property="og:description" content="{e(c['desc'], quote=True)}">
+<meta property="og:url" content="{me}">
+<meta property="og:image" content="{SITE}/assets/img/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">{ld}</script>
+<link rel="stylesheet" href="/assets/style.css?v={CSS_V}">
+</head>
+<body class="night page404 doc">
+<a class="skip" href="#main">{u['skip']}</a>
+<div class="sky" aria-hidden="true"><div class="sky-grad"></div></div>
+<header class="top">
+  <a class="brand" href="{u['path']}" aria-label="{u['site']}"><img src="/assets/img/logo.png" width="38" height="38" alt=""><span>{u['site']}</span></a>
+  <nav aria-label="{u['nav']}">
+    <a href="{u['path']}#features">{u['features']}</a>
+    <a href="{u['path']}#faq">{u['faq'] if lang == 'en' else 'سوالات'}</a>
+  </nav>
+  <a class="lang" href="{alt.replace(SITE, '')}" hreflang="{other}" lang="{other}" title="{u['other_title']}">{u['other']}</a>
+  <a class="btn btn-sm" href="{u['path']}#download">{u['dl']}</a>
+</header>
+<main id="main">
+  <nav class="crumbs" aria-label="{u['crumb_nav']}"><a href="{u['path']}">{u['site']}</a> / <span>{e(c['name'])}</span></nav>
+  <header class="card text doc-hero">
+    <h1>{e(c['h1'])}</h1>
+    <p class="lead">{e(c['lead'])} <a href="https://github.com/MrPitPot/shabpa/blob/main/CHANGELOG.md" rel="noopener">CHANGELOG.md</a></p>
+  </header>
+{chr(10).join(cards)}
+</main>
+<footer class="foot">
+  <div><img src="/assets/img/logo.png" width="28" height="28" alt=""><span>{u['foot']} <a href="https://github.com/MrPitPot" rel="noopener">Mr.PitPot</a> · {u['lic']}</span></div>
+  <nav aria-label="Links">
+    <a href="https://github.com/MrPitPot/shabpa" rel="noopener">{u['gh']}</a>
+    <a href="https://github.com/MrPitPot/shabpa/blob/main/SECURITY.md" rel="noopener">{u['sec']}</a>
+    <a href="{u['path']}changelog/">{u['chg']}</a>
   </nav>
   <p class="legal">{u['copy']}</p>
 </footer>
@@ -421,6 +545,9 @@ def write(path, text):
 
 
 def main():
+    if versions():
+        write(os.path.join(ROOT, "changelog", "index.html"), render_changelog("fa"))
+        write(os.path.join(ROOT, "en", "changelog", "index.html"), render_changelog("en"))
     for p in PAGES:
         write(os.path.join(ROOT, p["slug"], "index.html"), render("fa", p))
         write(os.path.join(ROOT, "en", p["slug"], "index.html"), render("en", p))
@@ -452,10 +579,13 @@ def main():
     for p in PAGES:
         rows.append(entry(url("fa", p["slug"]), url("en", p["slug"]), url("fa", p["slug"]), "0.8", [SITE + "/assets/img/" + p["img"] + ".webp"]))
         rows.append(entry(url("fa", p["slug"]), url("en", p["slug"]), url("en", p["slug"]), "0.7", [SITE + "/assets/img/en/" + p["img"] + ".webp"]))
+    if versions():
+        rows.append(entry(SITE + "/changelog/", SITE + "/en/changelog/", SITE + "/changelog/", "0.5"))
+        rows.append(entry(SITE + "/changelog/", SITE + "/en/changelog/", SITE + "/en/changelog/", "0.4"))
     write(os.path.join(ROOT, "sitemap.xml"),
           '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">\n'
           + "\n".join(rows) + "\n</urlset>\n")
-    print("pages:", len(PAGES) * 2)
+    print("pages:", len(PAGES) * 2, "changelog versions:", len(versions()))
 
 
 if __name__ == "__main__":

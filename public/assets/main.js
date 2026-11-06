@@ -310,6 +310,34 @@
       .catch(function () { /* بدون آمار هم سایت کامل کار می‌کنه */ });
   })();
 
+  /* ---------- امتیاز کاربران (از ۵ رأی به بالا؛ اگه سرور جواب نده، کادرش پنهان می‌مونه) ---------- */
+  (function fetchRatings() {
+    var tile = $("#statRate"); if (!tile) return;
+    var ctl = "AbortController" in window ? new AbortController() : null;
+    var to = setTimeout(function () { if (ctl) ctl.abort(); }, 10000);
+    fetch(ROOT + "api/ratings", { signal: ctl ? ctl.signal : undefined, credentials: "omit" })
+      .then(function (r) { if (!r.ok) throw 0; return r.json(); })
+      .then(function (d) {
+        clearTimeout(to);
+        var ok = d && typeof d.count === "number" && isFinite(d.count) && d.count >= 5 && d.count <= 1e9 && typeof d.average === "number" && d.average >= 1 && d.average <= 5 && Array.isArray(d.distribution) && d.distribution.length === 5;
+        if (!ok) return;
+        var nf = new Intl.NumberFormat(T.locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+        var cf = new Intl.NumberFormat(T.locale);
+        $("b", tile).textContent = nf.format(d.average);
+        $("#rateLine").textContent = LANG === "en" ? "out of 5 · " + cf.format(d.count) + " votes" : "از ۵ · " + cf.format(d.count) + " رأی";
+        var bars = $("#rateBars"); bars.textContent = "";
+        for (var star = 5; star >= 1; star--) {
+          var n = Math.max(0, Math.floor(Number(d.distribution[star - 1]) || 0));
+          var row = document.createElement("div"); row.className = "rate-row";
+          var label = document.createElement("i"); label.textContent = fa(star) + "★";
+          var bar = document.createElement("progress"); bar.max = d.count; bar.value = n; bar.setAttribute("aria-label", fa(star) + "★: " + cf.format(n));
+          row.appendChild(label); row.appendChild(bar); bars.appendChild(row);
+        }
+        tile.hidden = false;
+      })
+      .catch(function () { /* بدون امتیاز هم سایت کامل کار می‌کنه */ });
+  })();
+
   /* ---------- شبیه‌ساز خاموشی (فقط نمایشه، به سیستم دست نمی‌زنه) ---------- */
   (function sim() {
     var seg = $("#seg"), ring = $("#ring"), fg = $("#ringFg"), num = $("#simNum"), msg = $("#simMsg");

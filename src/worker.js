@@ -8,6 +8,8 @@
 //    The file is fetched from the official GitHub release, its SHA-256 is checked against the
 //    digest GitHub publishes, and only then is it cached. If anything does not match we send the
 //    visitor to GitHub instead of serving the file.
+//  - POST /api/rate               a star rating (1-5) sent by the app when the person agrees; one vote per install, a second vote replaces the first
+//  - GET /api/ratings             {count, average, distribution}; the home pages show it from 5 votes, the structured data gets it from 10
 // Everything else is handed to the static assets.
 
 const CANONICAL_HOST = "shabpa.ir";
@@ -137,6 +139,110 @@ async function stats(ctx, env) {
   return { github, site: c.enabled ? c.site : null, total, updated: new Date().toISOString() };
 }
 
+/* ---------- ratings ----------
+   The app sends {stars, version, lang, id} only after the person said yes. The id is a random install id; only its SHA-256 is stored, so nobody can read an id back and
+   a second vote from the same install replaces the first. No IP address and no user agent is ever stored: the flood counter is keyed by an HMAC of IP and hour. */
+const RATE_BODY_MAX = 512;
+const RATE_PER_HOUR = 20;          /* votes one address may send per hour */
+const RATE_GLOBAL_PER_HOUR = 600;  /* votes all addresses together may send per hour */
+
+function validRating(x) {
+  return !!x && typeof x === "object" && !Array.isArray(x)
+    && Number.isInteger(x.stars) && x.stars >= 1 && x.stars <= 5
+    && typeof x.id === "string" && /^[0-9a-f]{32}$/.test(x.id)
+    && typeof x.version === "string" && /^\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(x.version)
+    && (x.lang === "fa" || x.lang === "en");
+}
+
+async function hmacHex(secret, text) {
+  const key = await crypto.subtle.importKey("raw", new TextEncoder().encode(secret || "shabpa-no-salt"), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
+  return hex(await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(text)));
+}
+
+/** True while the sender is under the hourly limits. Old counters are deleted on the way. */
+async function underRateLimit(env, ip) {
+  const hour = Math.floor(Date.now() / 3600000);
+  const mine = "ip:" + (await hmacHex(env.RATE_SALT, ip + "|" + hour));
+  const run = async (k) => {
+    await env.DB.prepare("INSERT INTO rate_limits (k, n, hour) VALUES (?1, 1, ?2) ON CONFLICT(k) DO UPDATE SET n = n + 1").bind(k, hour).run();
+    const row = await env.DB.prepare("SELECT n FROM rate_limits WHERE k = ?1").bind(k).first();
+    return row ? row.n : 1;
+  };
+  const a = await run(mine);
+  const g = await run("all:" + hour);
+  if (Math.random() < 0.05) await env.DB.prepare("DELETE FROM rate_limits WHERE hour < ?1").bind(hour - 24).run();
+  return a <= RATE_PER_HOUR && g <= RATE_GLOBAL_PER_HOUR;
+}
+
+async function rate(request, env) {
+  if (request.method !== "POST") return json({ error: "method" }, 405, "no-store");
+  if (!env.DB) return json({ error: "unavailable" }, 503, "no-store");
+  if (!/^application\/json(\s*;|$)/i.test(request.headers.get("Content-Type") || "")) return json({ error: "content-type" }, 415, "no-store");
+  const declared = Number(request.headers.get("Content-Length") || 0);
+  if (declared > RATE_BODY_MAX) return json({ error: "too-large" }, 413, "no-store");
+  let text;
+  try { text = await request.text(); } catch (e) { return json({ error: "bad-request" }, 400, "no-store"); }
+  if (text.length > RATE_BODY_MAX) return json({ error: "too-large" }, 413, "no-store");
+  let body;
+  try { body = JSON.parse(text); } catch (e) { return json({ error: "bad-json" }, 400, "no-store"); }
+  if (!validRating(body)) return json({ error: "invalid" }, 400, "no-store");
+  try {
+    const ip = request.headers.get("CF-Connecting-IP") || "unknown";
+    if (!(await underRateLimit(env, ip))) return json({ error: "rate-limited" }, 429, "no-store");
+    const idHash = hex(await crypto.subtle.digest("SHA-256", new TextEncoder().encode("shabpa-rating:" + body.id)));
+    const day = new Date().toISOString().slice(0, 10);
+    await env.DB.prepare(
+      "INSERT INTO ratings (id_hash, stars, app_version, lang, created_at, updated_at) VALUES (?1, ?2, ?3, ?4, ?5, ?5) " +
+      "ON CONFLICT(id_hash) DO UPDATE SET stars = excluded.stars, app_version = excluded.app_version, lang = excluded.lang, updated_at = excluded.updated_at"
+    ).bind(idHash, body.stars, body.version, body.lang, day).run();
+  } catch (e) {
+    console.log(JSON.stringify({ evt: "rate-failed", err: String(e && e.message || e) }));
+    return json({ error: "unavailable" }, 503, "no-store");
+  }
+  return json({ ok: true }, 200, "no-store");
+}
+
+/** {count, average (one decimal), distribution [1..5 stars]}, fresh for 5 minutes. null without a database. */
+async function ratingSummary(ctx, env) {
+  if (!env.DB) return null;
+  const cache = caches.default;
+  const key = new Request("https://shabpa.ir/__cache/ratings");
+  const hit = await cache.match(key);
+  if (hit) return hit.json();
+  const { results } = await env.DB.prepare("SELECT stars, COUNT(*) AS c FROM ratings GROUP BY stars").all();
+  const distribution = [0, 0, 0, 0, 0];
+  for (const r of results || []) if (r.stars >= 1 && r.stars <= 5) distribution[r.stars - 1] = r.c | 0;
+  const count = distribution.reduce((a, b) => a + b, 0);
+  const average = count === 0 ? 0 : Math.round((distribution.reduce((a, c, i) => a + c * (i + 1), 0) / count) * 10) / 10;
+  const summary = { count, average, distribution };
+  ctx.waitUntil(cache.put(key, new Response(JSON.stringify(summary), { headers: { "Cache-Control": "max-age=300" } })));
+  return summary;
+}
+
+/** The home pages' structured data gets aggregateRating only from 10 real votes, built from the real numbers. */
+async function withAggregateRating(res, ctx, env) {
+  let summary = null;
+  try { summary = await ratingSummary(ctx, env); } catch (e) { return res; }
+  if (!summary || summary.count < 10) return res;
+  let buffer = "";
+  return new HTMLRewriter().on('script[type="application/ld+json"]', {
+    text(chunk) {
+      buffer += chunk.text;
+      if (!chunk.lastInTextNode) { chunk.remove(); return; }
+      let out = buffer;
+      try {
+        const data = JSON.parse(buffer);
+        const graph = Array.isArray(data["@graph"]) ? data["@graph"] : [data];
+        for (const node of graph) if (node && node["@type"] === "SoftwareApplication")
+          node.aggregateRating = { "@type": "AggregateRating", ratingValue: summary.average, ratingCount: summary.count, bestRating: 5, worstRating: 1 };
+        out = JSON.stringify(data);
+      } catch (e) { /* leave the original text */ }
+      buffer = "";
+      chunk.replace(out.replace(/</g, "\\u003c"), { html: true });
+    },
+  }).transform(res);
+}
+
 function parseRange(header, size) {
   const m = /^bytes=(\d*)-(\d*)$/.exec(header || "");
   if (!m || (m[1] === "" && m[2] === "")) return null;
@@ -199,6 +305,16 @@ export default {
       try { return json(await stats(ctx, env), 200, "public, max-age=300"); } catch (e) { return json({ error: "unavailable" }, 502, "no-store"); }
     }
 
+    if (url.pathname === "/api/rate") return rate(request, env);
+
+    if (url.pathname === "/api/ratings") {
+      if (request.method !== "GET" && request.method !== "HEAD") return new Response("Method not allowed", { status: 405, headers: { Allow: "GET, HEAD" } });
+      try {
+        const summary = await ratingSummary(ctx, env);
+        return summary ? json(summary, 200, "public, max-age=300") : json({ error: "unavailable" }, 503, "no-store");
+      } catch (e) { return json({ error: "unavailable" }, 502, "no-store"); }
+    }
+
     if (url.pathname === "/api/latest" || url.pathname === `/download/${FILE}`) {
       if (request.method !== "GET" && request.method !== "HEAD") return new Response("Method not allowed", { status: 405, headers: { Allow: "GET, HEAD" } });
       try {
@@ -219,7 +335,8 @@ export default {
     if ((url.pathname === "/" || url.pathname === "/en/") && request.method === "GET") {
       console.log(JSON.stringify({ evt: "view", p: url.pathname, c: country }));
     }
-    const res = await env.ASSETS.fetch(request);
+    let res = await env.ASSETS.fetch(request);
+    if ((url.pathname === "/" || url.pathname === "/en/") && request.method === "GET" && res.status === 200) res = await withAggregateRating(res, ctx, env);
     if (!onWorkersDev) return res;
     const out = new Response(res.body, res);
     out.headers.set("X-Robots-Tag", "noindex");
