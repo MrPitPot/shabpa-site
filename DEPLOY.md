@@ -74,3 +74,12 @@
   4. `npx wrangler deploy`
 - تست ورکر: `node tools/test-worker.mjs`.
 - ربات‌ها (User-Agent) و درخواست‌های Range شمرده نمی‌شن؛ ولی کسی که عمداً با UA معمولی بارها دانلود کنه شمارش رو بالا می‌بره (حفاظتی ندارد؛ عدد فقط برای نمایشه).
+
+## Ratings (POST /api/rate, GET /api/ratings)
+
+- Migration `0002_ratings.sql` (`wrangler d1 migrations apply shabpa-stats --remote`) creates `ratings` and `rate_limits`.
+- Secret `RATE_SALT` (random, `wrangler secret put RATE_SALT`): keys the flood counter (an HMAC of the address and the hour), so no address is ever stored or recoverable from the table. Without it a fixed fallback is used.
+- Stored: SHA-256 of the install id, stars, app version, language, day. Never an IP address or user agent. Counters older than a day are deleted.
+- The home pages show the average from 5 votes; the structured data (`aggregateRating`) is added by the worker from 10 votes, from the real numbers.
+- Test with a throwaway id and delete that row afterwards: `wrangler d1 execute shabpa-stats --remote --command "DELETE FROM ratings WHERE id_hash = '<sha256 of "shabpa-rating:<id>">'"`.
+- Changelog pages: `python tools/build-pages.py` (reads `CHANGELOG.md` and `patch-note-<v>.fa.md` / `.en.md` from the app repo, `SHABPA_APP_DIR` to point elsewhere).
