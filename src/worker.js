@@ -315,7 +315,7 @@ export default {
       } catch (e) { return json({ error: "unavailable" }, 502, "no-store"); }
     }
 
-    if (url.pathname === "/api/latest" || url.pathname === `/download/${FILE}`) {
+    if (url.pathname === "/api/latest" || url.pathname === `/download/${FILE}` || url.pathname === `/update/${FILE}`) {
       if (request.method !== "GET" && request.method !== "HEAD") return new Response("Method not allowed", { status: 405, headers: { Allow: "GET, HEAD" } });
       try {
         const info = await latestInfo(ctx);

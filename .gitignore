@@ -7,3 +7,4 @@ node_modules/
 !.env.example
 dist-iran/
 dist-iran-subpath/
+public/update/ShabpaSetup.exe
